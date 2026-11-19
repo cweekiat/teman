@@ -1,0 +1,4 @@
+ios/
+*.xcuserstate
+xcuserdata/
+.DS_Store

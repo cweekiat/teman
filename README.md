@@ -56,8 +56,12 @@ The work is built around three things patients and caregivers say:
 | [Product brainstorm](docs/product.md) | People, the journey, every feature, and the patient quotes each one answers |
 | [Design (Apple HIG)](docs/design-hig.md) | Navigation, accessibility, onboarding, permissions, notifications and voice, each tied to the Human Interface Guideline it follows |
 | [Native iOS frameworks](docs/frameworks.md) | Which Apple framework does which job, and why |
+| [Choosing the SEA-LION model](docs/on-device-model.md) | Which SEA-LION model fits on an iPhone, multimodal reading of labels and letters, and the evaluation plan |
+| [SEA-LION on iPhone: work required](docs/sealion-ios-requirements.md) | Conversion, quantisation, voice, safety, delivery and effort, scoped but not built |
 | [On-device LLMs](docs/on-device-llm.md) | How offline language models can help, the guardrails around them, and how to evaluate them |
 | [Architecture](docs/architecture.md) | Modules, data model, citation pipeline and Swift sketches |
+| [Disclaimer, Terms and Privacy Policy](docs/legal.md) | The in-app legal text for this community project |
+| [Privacy compliance (HIPAA/PDPA-grade)](docs/privacy-compliance.md) | Safeguard-by-safeguard mapping for the iOS build |
 | [Safety and privacy](docs/safety-and-privacy.md) | Clinical boundaries, red flags, HSA software-as-a-medical-device positioning, and the PDPA |
 | [Source registry](docs/sources.md) | Every trusted Singapore source Teman draws on, and the review cadence |
 
