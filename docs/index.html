@@ -1,365 +1,620 @@
 <!doctype html>
-<html lang="en-SG">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Teman: cancer care companion</title>
-<meta name="description" content="Teman is a concept iOS app that helps people with cancer in Singapore understand their diagnosis, get the right care, keep track of appointments, and ask their doctors the right questions. Every medical statement is cited. Everything stays on the iPhone.">
-<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<meta name="description" content="Teman is a free iPhone companion for people with cancer in Singapore: treatment cycles, medicines, visits, bills and support, by voice, in English, 中文, Bahasa Melayu and தமிழ். Private by design.">
+<meta property="og:title" content="Teman: a gentle companion for cancer care">
+<meta property="og:description" content="Plan, medicines, visits and bills, by voice, in four languages. Free, private, made in Singapore.">
+<meta property="og:image" content="https://cweekiat.github.io/teman/assets/icon-512.png">
+<meta name="theme-color" content="#fbeef3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#140d12" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/icon-512.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <style>
 :root{
-  --bg:#ffffff; --bg2:#f5f4f7; --bg3:#ebe9ef; --ink:#1b1a1f; --ink2:#4c4a55; --line:#d9d6df;
-  --accent:#8e2a6b; --accent-ink:#ffffff; --accent-soft:#f6e7f0; --ok:#1f6b45; --warn:#8a4b00;
-  --radius:18px; --maxw:1120px;
-  --font: -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --serif: "New York", ui-serif, Georgia, "Times New Roman", serif;
+  --bg:#fdf7f9; --bg2:#ffffff; --blush:#fbe7ef; --blush2:#f6d5e0; --mint:#e6f4f1; --lilac:#ece8fb;
+  --ink:#231b20; --ink2:#5c5158; --line:#ecdfe5;
+  --rose:#b03a74; --rose-ink:#ffffff; --rose-soft:#f9e3ed; --teal:#0f7b6c; --amber:#a35a00; --red:#c0392b;
+  --glass:rgba(255,255,255,.62); --glass-line:rgba(255,255,255,.85);
+  --shadow:0 30px 60px -20px rgba(120,40,80,.28), 0 12px 24px -12px rgba(60,20,40,.18);
+  --radius:22px; --maxw:1160px;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans Tamil","Noto Sans SC",sans-serif;
+  --serif:"New York",ui-serif,Georgia,"Times New Roman",serif;
 }
 @media (prefers-color-scheme: dark){
-  :root{ --bg:#111014; --bg2:#1b1a20; --bg3:#26242c; --ink:#f2f0f5; --ink2:#b9b5c2; --line:#34313b;
-    --accent:#e58bc4; --accent-ink:#1b0d16; --accent-soft:#2c1a26; --ok:#7fd6a6; --warn:#f2b46b; }
+  :root:not([data-theme="light"]){
+    --bg:#140d12; --bg2:#1e161b; --blush:#2a1822; --blush2:#3a2030; --mint:#12221f; --lilac:#1d1a2c;
+    --ink:#f6eef2; --ink2:#c4b6be; --line:#36272f;
+    --rose:#f08ab8; --rose-ink:#2a0d1b; --rose-soft:#3a1d2b; --teal:#6fd6c3; --amber:#f2b46b; --red:#ff8a7a;
+    --glass:rgba(40,26,34,.6); --glass-line:rgba(255,255,255,.08);
+    --shadow:0 30px 60px -20px rgba(0,0,0,.6), 0 12px 24px -12px rgba(0,0,0,.5);
+  }
 }
-@media (prefers-contrast: more){ :root{ --ink2:var(--ink); --line:var(--ink); } }
+:root[data-theme="dark"]{
+  --bg:#140d12; --bg2:#1e161b; --blush:#2a1822; --blush2:#3a2030; --mint:#12221f; --lilac:#1d1a2c;
+  --ink:#f6eef2; --ink2:#c4b6be; --line:#36272f;
+  --rose:#f08ab8; --rose-ink:#2a0d1b; --rose-soft:#3a1d2b; --teal:#6fd6c3; --amber:#f2b46b; --red:#ff8a7a;
+  --glass:rgba(40,26,34,.6); --glass-line:rgba(255,255,255,.08);
+  --shadow:0 30px 60px -20px rgba(0,0,0,.6), 0 12px 24px -12px rgba(0,0,0,.5);
+}
 *{box-sizing:border-box}
-html{font-size:106.25%; -webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.55}
-a{color:var(--accent);text-underline-offset:.18em}
-a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
-.skip{position:absolute;left:-999px;top:0;background:var(--accent);color:var(--accent-ink);padding:.75rem 1rem;z-index:10}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:18px;line-height:1.55;overflow-x:clip}
+main{overflow-x:clip}
+img,video{display:block;max-width:100%}
+a{color:var(--rose);text-underline-offset:.18em}
+:focus-visible{outline:3px solid var(--rose);outline-offset:3px;border-radius:8px}
+.skip{position:absolute;left:-999px;top:0;background:var(--rose);color:var(--rose-ink);padding:.75rem 1rem;z-index:50}
 .skip:focus{left:1rem;top:1rem}
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 max(16px, env(safe-area-inset-left))}
-header.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);border-bottom:1px solid var(--line)}
-@media (prefers-reduced-transparency: reduce){header.top{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none}}
-.nav{display:flex;align-items:center;gap:1rem;min-height:56px}
-.brand{display:flex;align-items:center;gap:.6rem;font-weight:700;color:var(--ink);text-decoration:none;font-size:1.1rem}
-.brand img{width:30px;height:30px}
-.nav ul{display:flex;gap:.25rem;list-style:none;margin:0 0 0 auto;padding:0;flex-wrap:wrap}
-.nav ul a{display:inline-flex;align-items:center;min-height:44px;padding:0 .7rem;color:var(--ink2);text-decoration:none;border-radius:10px;font-size:.92rem}
-.nav ul a:hover{background:var(--bg2);color:var(--ink)}
-@media (max-width:760px){.nav ul li:not(.keep){display:none}}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 1.2rem;border-radius:999px;font-weight:600;text-decoration:none}
-.btn.primary{background:var(--accent);color:var(--accent-ink)}
-.btn.ghost{border:1.5px solid var(--line);color:var(--ink)}
-.hero{padding:clamp(2.5rem,7vw,5.5rem) 0 2rem;display:grid;grid-template-columns:1.15fr .85fr;gap:3rem;align-items:center}
-@media (max-width:900px){.hero{grid-template-columns:1fr}}
-.eyebrow{font-size:.85rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--accent)}
-h1{font-size:clamp(2.1rem,5vw,3.3rem);line-height:1.08;margin:.4rem 0 1rem;letter-spacing:-.02em}
-h1 em{font-family:var(--serif);font-style:italic;font-weight:600;color:var(--accent)}
-.lede{font-size:1.18rem;color:var(--ink2);max-width:38rem}
-.cta{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.6rem}
-.status{margin-top:1.4rem;font-size:.9rem;color:var(--ink2)}
-section{padding:clamp(2.5rem,6vw,4.5rem) 0;border-top:1px solid var(--line);scroll-margin-top:56px}
-h2{font-size:clamp(1.6rem,3.4vw,2.2rem);line-height:1.15;margin:0 0 .6rem;letter-spacing:-.01em}
-.sub{color:var(--ink2);max-width:46rem;margin:0 0 2rem;font-size:1.05rem}
-h3{font-size:1.1rem;margin:0 0 .35rem}
-.grid{display:grid;gap:1rem}
-.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
-@media (max-width:900px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:620px){.g2,.g3,.g4{grid-template-columns:1fr}}
-.card{background:var(--bg2);border-radius:var(--radius);padding:1.25rem 1.3rem}
-.card p{margin:.2rem 0 0;color:var(--ink2)}
-/* boundaries */
-.bounds{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
-.bounds div{padding:1rem 1.2rem;border-top:1px solid var(--line)}
-.bounds .h{background:var(--bg2);font-weight:700;border-top:0}
-.bounds .no::before{content:"✕ ";color:var(--warn);font-weight:700}
-.bounds .yes::before{content:"✓ ";color:var(--ok);font-weight:700}
-@media (max-width:620px){.bounds{grid-template-columns:1fr}.bounds .h:nth-child(2){display:none}.bounds .yes{border-top:0;padding-top:0;background:var(--bg)}}
-/* quotes */
-blockquote{margin:0;font-family:var(--serif);font-size:1.25rem;line-height:1.4}
-.quote{border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;padding:1.2rem 1.4rem}
-.quote .ans{font-family:var(--font);font-size:.98rem;color:var(--ink2);margin-top:.8rem}
-.quote .ans strong{color:var(--ink)}
-/* journey */
-ol.journey{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(7,1fr);gap:.6rem;counter-reset:s}
-@media (max-width:1000px){ol.journey{grid-template-columns:1fr}}
-ol.journey li{counter-increment:s;background:var(--bg2);border-radius:14px;padding:1rem;position:relative}
-ol.journey li::before{content:counter(s);display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.9rem;margin-bottom:.5rem}
-ol.journey strong{display:block}
-ol.journey span{color:var(--ink2);font-size:.92rem}
-/* phones */
-.phones{display:flex;gap:1.4rem;justify-content:center;flex-wrap:wrap}
-.phone{width:280px;border-radius:44px;background:#0b0b0d;padding:10px;box-shadow:0 1px 0 var(--line)}
-.screen{border-radius:36px;background:#f2f2f7;color:#000;min-height:560px;overflow:hidden;font-size:15px;display:flex;flex-direction:column}
-@media (prefers-color-scheme: dark){.screen{background:#000;color:#fff}.screen .row,.screen .tile{background:#1c1c1e!important}.screen .muted{color:#98989f!important}.screen .tabbar{background:rgba(30,30,32,.92)!important}}
-.screen .sb{display:flex;justify-content:space-between;padding:14px 26px 4px;font-weight:600;font-size:13px}
-.screen .title{font-size:28px;font-weight:700;padding:6px 18px 10px;letter-spacing:-.01em}
-.screen .row{background:#fff;margin:0 12px 10px;border-radius:14px;padding:12px 14px}
-.screen .muted{color:#6c6c70;font-size:13px}
-.screen .pill{display:inline-block;background:#8e2a6b;color:#fff;border-radius:999px;padding:7px 14px;font-weight:600;font-size:14px;margin-top:8px}
-.screen .chk{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid rgba(127,127,127,.2)}
-.screen .chk:first-of-type{border-top:0}
-.screen .box{flex:0 0 22px;height:22px;border-radius:50%;border:2px solid #8e2a6b;display:grid;place-items:center;font-size:13px;color:#fff}
-.screen .box.on{background:#8e2a6b}
-.screen .cite{display:inline-flex;gap:4px;align-items:center;background:rgba(142,42,107,.12);color:#8e2a6b;border-radius:8px;padding:3px 8px;font-size:12px;font-weight:600;margin-top:8px}
-@media (prefers-color-scheme: dark){.screen .cite{color:#e58bc4;background:rgba(229,139,196,.16)}}
-.screen .word{font-family:var(--serif);font-size:24px;font-weight:600}
-.screen .spacer{flex:1}
-.screen .tabbar{margin:8px 10px 12px;border-radius:26px;background:rgba(255,255,255,.92);display:flex;justify-content:space-around;padding:8px 4px;font-size:10px;font-weight:600}
-.screen .tabbar span{display:flex;flex-direction:column;align-items:center;gap:2px;color:#8a8a8e}
-.screen .tabbar span.on{color:#8e2a6b}
-@media (prefers-color-scheme: dark){.screen .tabbar span.on{color:#e58bc4}}
-.screen .tabbar i{font-style:normal;font-size:17px;line-height:1}
-.caption{text-align:center;color:var(--ink2);font-size:.92rem;margin-top:.7rem;max-width:280px}
-figure{margin:0}
-/* pipeline */
-.pipe{display:grid;grid-template-columns:repeat(6,1fr);gap:.5rem;counter-reset:p}
-@media (max-width:900px){.pipe{grid-template-columns:1fr 1fr}}
-@media (max-width:520px){.pipe{grid-template-columns:1fr}}
-.pipe div{background:var(--bg2);border-radius:14px;padding:.9rem;font-size:.93rem;counter-increment:p}
-.pipe div::before{content:counter(p) ". ";font-weight:700;color:var(--accent)}
-.pipe div.stop{background:var(--accent-soft)}
-table{width:100%;border-collapse:collapse;font-size:.95rem}
-th,td{text-align:left;padding:.7rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:.82rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink2)}
-.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius)}
-.tag{display:inline-block;font-size:.78rem;font-weight:600;border-radius:6px;padding:.1rem .45rem;background:var(--bg3);color:var(--ink2)}
-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;background:var(--bg3);padding:.08rem .35rem;border-radius:5px}
-ul.src{columns:2;column-gap:2rem;padding-left:1.1rem}
-@media (max-width:700px){ul.src{columns:1}}
-ul.src li{break-inside:avoid;margin-bottom:.45rem}
-.emergency{background:var(--accent-soft);border-radius:var(--radius);padding:1.2rem 1.4rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
-.emergency strong{font-size:1.4rem}
-footer{border-top:1px solid var(--line);padding:2.5rem 0 calc(2.5rem + env(safe-area-inset-bottom));color:var(--ink2);font-size:.92rem}
-@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 max(16px,env(safe-area-inset-left))}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* nav */
+header.top{position:fixed;inset:0 0 auto 0;z-index:40;transition:background .3s,box-shadow .3s}
+header.top.solid{background:var(--glass);backdrop-filter:saturate(1.8) blur(18px);-webkit-backdrop-filter:saturate(1.8) blur(18px);box-shadow:0 1px 0 var(--line)}
+@media (prefers-reduced-transparency: reduce){header.top.solid{background:var(--bg)}}
+.nav{display:flex;align-items:center;gap:1rem;min-height:64px}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:700;color:var(--ink);text-decoration:none;font-size:1.15rem}
+.brand img{width:34px;height:34px;border-radius:9px;box-shadow:0 2px 8px rgba(176,58,116,.25)}
+.nav ul{display:flex;gap:.15rem;list-style:none;margin:0 0 0 auto;padding:0}
+.nav ul a{display:inline-flex;align-items:center;min-height:44px;padding:0 .8rem;color:var(--ink2);text-decoration:none;border-radius:12px;font-size:.92rem;font-weight:500}
+.nav ul a:hover{color:var(--ink);background:var(--glass)}
+@media (max-width:820px){.nav ul li:not(.keep){display:none}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:52px;padding:0 1.4rem;border-radius:999px;font-weight:600;text-decoration:none;font-size:1rem;border:0;cursor:pointer;font-family:inherit;transition:transform .2s, box-shadow .2s}
+.btn.primary{background:var(--rose);color:var(--rose-ink);box-shadow:0 10px 24px -8px rgba(176,58,116,.55)}
+.btn.primary:hover{transform:translateY(-2px)}
+.btn.glass{background:var(--glass);color:var(--ink);border:1px solid var(--glass-line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.btn svg{width:20px;height:20px}
+
+/* hero */
+.hero{position:relative;min-height:100svh;padding:110px 0 60px;display:flex;align-items:center;overflow:hidden;
+  background:radial-gradient(1200px 600px at 80% 10%,var(--blush2),transparent 60%),radial-gradient(900px 600px at 0% 90%,var(--mint),transparent 60%),var(--blush)}
+.blob{position:absolute;border-radius:50%;filter:blur(40px);opacity:.55;pointer-events:none;animation:drift 18s ease-in-out infinite alternate}
+.blob.a{width:420px;height:420px;background:#f7b9d1;top:-80px;left:38%}
+.blob.b{width:360px;height:360px;background:#bfe7df;bottom:-120px;left:-60px;animation-duration:22s}
+.blob.c{width:280px;height:280px;background:#d9d2fb;top:30%;right:-60px;animation-duration:26s}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .blob{opacity:.18}}
+:root[data-theme="dark"] .blob{opacity:.18}
+@keyframes drift{to{transform:translate(60px,40px) scale(1.15)}}
+.hero-grid{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:2rem;align-items:center;width:100%}
+@media (max-width:940px){.hero-grid{grid-template-columns:1fr;text-align:center}.hero .cta,.hero .chips{justify-content:center}}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.chip{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .85rem;border-radius:999px;background:var(--glass);border:1px solid var(--glass-line);font-size:.85rem;font-weight:600;color:var(--ink2);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px color-mix(in srgb,var(--teal) 20%,transparent)}
+h1{font-size:clamp(2.6rem,6.4vw,4.9rem);line-height:1.02;letter-spacing:-.035em;margin:0 0 1.1rem;font-weight:800}
+h1 .word{display:inline-block;font-family:var(--serif);font-style:italic;font-weight:600;color:var(--rose);min-width:4ch;transition:opacity .45s, transform .45s, filter .45s}
+h1 .word.out{opacity:0;transform:translateY(.35em) rotateX(70deg);filter:blur(6px)}
+.lede{font-size:clamp(1.1rem,1.6vw,1.3rem);color:var(--ink2);max-width:34rem;margin:0 0 1.8rem}
+@media (max-width:940px){.lede{margin-inline:auto}}
+.cta{display:flex;gap:.8rem;flex-wrap:wrap}
+.status{margin-top:1.2rem;font-size:.9rem;color:var(--ink2)}
+
+/* 3D phones */
+.stage{perspective:1600px;height:min(640px,80vw);position:relative;display:grid;place-items:center}
+@media (max-width:940px){.stage{height:540px;margin-top:0}}
+@media (max-width:520px){.stage{height:470px}}
+.trio{position:relative;width:300px;height:620px;transform-style:preserve-3d;transform:rotateY(-22deg) rotateX(10deg);transition:transform .25s ease-out}
+.phone{position:absolute;width:290px;aspect-ratio:1320/2868;border-radius:46px;padding:9px;background:linear-gradient(145deg,#2b2a2e,#0d0c0f);box-shadow:var(--shadow), inset 0 0 0 1.5px rgba(255,255,255,.12)}
+.phone img{width:100%;height:100%;object-fit:cover;border-radius:38px;background:#fff}
+.trio .phone{left:5px;top:0}
+.trio .p1{transform:translateZ(-160px) translateX(-170px) rotateY(10deg);animation:float 7s ease-in-out infinite}
+.trio .p2{transform:translateZ(0);animation:float 7s ease-in-out -2.3s infinite}
+.trio .p3{transform:translateZ(-160px) translateX(170px) rotateY(-10deg);animation:float 7s ease-in-out -4.6s infinite}
+@keyframes float{50%{translate:0 -14px}}
+@media (max-width:940px){.trio{transform:rotateY(-12deg) rotateX(8deg) scale(.82)}}
+@media (max-width:520px){.trio{scale:.72}.trio .p1{transform:translateZ(-160px) translateX(-110px)}.trio .p3{transform:translateZ(-160px) translateX(110px)}}
+
+/* sections */
+section{position:relative;padding:clamp(4rem,9vw,7.5rem) 0;scroll-margin-top:64px}
+.eyebrow{font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--rose);margin:0 0 .6rem}
+h2{font-size:clamp(2rem,4.4vw,3.3rem);line-height:1.06;letter-spacing:-.03em;margin:0 0 1rem;font-weight:800}
+h2 em{font-family:var(--serif);font-style:italic;font-weight:600;color:var(--rose)}
+.sub{color:var(--ink2);max-width:40rem;font-size:1.12rem;margin:0 0 2.5rem}
+.center{text-align:center}.center .sub{margin-inline:auto}
+h3{font-size:1.18rem;margin:0 0 .35rem;letter-spacing:-.01em}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(40px) rotateX(12deg);transform-origin:50% 100%;transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){.rv{opacity:1;transform:none;transition:none}.blob,.trio .phone{animation:none}}
+
+/* demo */
+.demo{background:linear-gradient(180deg,var(--bg),var(--blush) 60%,var(--bg))}
+.demo-grid{display:grid;grid-template-columns:auto 1fr;gap:clamp(2rem,6vw,5rem);align-items:center}
+@media (max-width:860px){.demo-grid{grid-template-columns:1fr;justify-items:center}}
+.vid-stage{perspective:1400px}
+.vid{width:min(360px,82vw);aspect-ratio:9/16;border-radius:34px;overflow:hidden;box-shadow:var(--shadow);background:var(--blush);transform:rotateX(var(--rx,24deg)) rotateY(var(--ry,-14deg)) scale(var(--sc,.9));transition:transform .15s linear;position:relative}
+.vid video{width:100%;height:100%;object-fit:cover}
+.vid button{position:absolute;inset:auto 14px 14px auto;width:48px;height:48px;border-radius:50%;border:1px solid var(--glass-line);background:var(--glass);color:var(--ink);display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.vid button svg{width:20px;height:20px}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:.6rem;counter-reset:s}
+.steps li{counter-increment:s;display:flex;gap:1rem;align-items:flex-start;padding:1rem 1.1rem;border-radius:18px;transition:background .4s, transform .4s;color:var(--ink2)}
+.steps li::before{content:counter(s);flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.95rem;background:var(--rose-soft);color:var(--rose);transition:background .4s,color .4s}
+.steps li strong{display:block;color:var(--ink)}
+.steps li.on{background:var(--bg2);box-shadow:var(--shadow);transform:translateX(6px)}
+.steps li.on::before{background:var(--rose);color:var(--rose-ink)}
+
+/* sticky tab story */
+.story{display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+@media (max-width:860px){.story{grid-template-columns:1fr}}
+.story-phone{position:sticky;top:calc(50vh - 300px);height:600px;display:grid;place-items:center;perspective:1400px}
+@media (max-width:860px){.story-phone{display:none}}
+.flip{position:relative;width:276px;aspect-ratio:1320/2868;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.flip .phone{width:100%;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.flip .back{transform:rotateY(180deg)}
+.chapter{min-height:78vh;display:flex;flex-direction:column;justify-content:center;padding:2rem 0}
+.chapter .tab{display:inline-flex;align-items:center;gap:.5rem;font-weight:700;color:var(--rose);font-size:.95rem;margin-bottom:.6rem}
+.chapter .tab b{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:var(--rose-soft);font-size:.85rem}
+.chapter h3{font-size:clamp(1.6rem,3vw,2.3rem);letter-spacing:-.02em;line-height:1.12;margin-bottom:.8rem}
+.chapter p{color:var(--ink2);margin:0 0 1rem;max-width:30rem}
+.chapter ul{margin:0;padding:0;list-style:none;display:grid;gap:.45rem}
+.chapter li{display:flex;gap:.6rem;color:var(--ink)}
+.chapter li::before{content:"";flex:none;width:8px;height:8px;margin-top:.6em;border-radius:50%;background:var(--rose)}
+.chapter .mobile-shot{display:none;width:230px;margin:1.5rem auto 0}
+@media (max-width:860px){.chapter{min-height:auto;padding:2.5rem 0}.chapter .mobile-shot{display:block}}
+
+/* feature cards */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;perspective:1200px}
+@media (max-width:940px){.cards{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:600px){.cards{grid-template-columns:1fr}}
+.card{position:relative;background:var(--bg2);border-radius:var(--radius);padding:1.5rem;box-shadow:0 1px 0 var(--line), 0 20px 40px -30px rgba(120,40,80,.35);transform-style:preserve-3d;transition:transform .35s ease, box-shadow .35s}
+.card:hover{box-shadow:0 1px 0 var(--line), var(--shadow)}
+.card p{margin:.2rem 0 0;color:var(--ink2);font-size:1rem}
+.ico{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;margin-bottom:1rem;transform:translateZ(30px)}
+.ico svg{width:26px;height:26px}
+.t-rose{background:var(--rose-soft);color:var(--rose)} .t-teal{background:var(--mint);color:var(--teal)} .t-lilac{background:var(--lilac);color:#6a55d8} .t-amber{background:color-mix(in srgb,var(--amber) 16%,transparent);color:var(--amber)}
+:root[data-theme="dark"] .t-lilac{color:#b6a8ff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .t-lilac{color:#b6a8ff}}
+.card .tag{position:absolute;top:1.2rem;right:1.2rem;font-size:.75rem;font-weight:700;color:var(--teal);background:var(--mint);padding:.25rem .6rem;border-radius:999px}
+
+/* ring carousel */
+.ring-wrap{overflow:hidden;height:min(720px,135vw);perspective:1800px;display:grid;place-items:center;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.ring-wrap:active{cursor:grabbing}
+.ring{position:relative;width:220px;aspect-ratio:1320/2868;transform-style:preserve-3d}
+.ring .phone{width:220px;inset:0;border-radius:36px;padding:7px}
+.ring .phone img{border-radius:30px}
+.ring figcaption{position:absolute;left:0;right:0;bottom:-2.2rem;text-align:center;font-size:.9rem;font-weight:600;color:var(--ink2)}
+@media (max-width:600px){.ring{scale:.72}}
+.ring-hint{text-align:center;color:var(--ink2);font-size:.9rem;margin-top:1rem}
+
+/* languages */
+.langs{background:linear-gradient(180deg,var(--bg),var(--lilac) 50%,var(--bg))}
+.lang-row{display:flex;justify-content:center;gap:clamp(1rem,3vw,2.5rem);perspective:1600px;flex-wrap:wrap}
+.lang-card{text-align:center}
+.lang-card .phone{position:relative;width:230px;border-radius:38px;padding:8px;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.lang-card .phone img{border-radius:31px}
+.lang-card:nth-child(1) .phone{transform:rotateY(18deg)} .lang-card:nth-child(3) .phone{transform:rotateY(-18deg)}
+.lang-card:hover .phone{transform:rotateY(0) translateY(-10px)}
+.lang-card b{display:block;margin-top:1.2rem;font-size:1.25rem}
+.lang-card span{color:var(--ink2);font-size:.95rem}
+.voice-pills{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:2.5rem}
+
+/* widgets */
+.wgrid{display:grid;grid-template-columns:1.1fr .9fr;gap:2.5rem;align-items:center}
+@media (max-width:900px){.wgrid{grid-template-columns:minmax(0,1fr)}}
+.wgrid>*,.home>*{min-width:0}
+@media (max-width:520px){.home{padding:16px;gap:12px;border-radius:30px}.w{padding:12px;border-radius:20px}.w .big{font-size:1rem}.w{font-size:.85rem;overflow:hidden}.w>div{overflow-wrap:anywhere}.ringmini{width:50px;height:50px}.ringmini::after{width:38px;height:38px;font-size:.8rem}}
+.home{position:relative;border-radius:40px;padding:26px;background:linear-gradient(160deg,#f9c8da,#cfe9f3 60%,#d9d0fb);display:grid;grid-template-columns:1fr 1fr;gap:18px;box-shadow:var(--shadow);transform:perspective(1400px) rotateX(14deg) rotateZ(-2deg);transition:transform .6s}
+.home:hover{transform:perspective(1400px) rotateX(0) rotateZ(0)}
+:root[data-theme="dark"] .home{background:linear-gradient(160deg,#4a2238,#173039 60%,#2a2448)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .home{background:linear-gradient(160deg,#4a2238,#173039 60%,#2a2448)}}
+.w{background:rgba(255,255,255,.82);color:#231b20;border-radius:24px;padding:16px;aspect-ratio:1;display:flex;flex-direction:column;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 24px -12px rgba(0,0,0,.25);animation:bob 6s ease-in-out infinite}
+.w:nth-child(2){animation-delay:-1.5s}.w:nth-child(3){animation-delay:-3s}.w:nth-child(4){animation-delay:-4.5s}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.w.wide{grid-column:span 2;aspect-ratio:auto;min-height:150px}
+.w small{font-size:.72rem;font-weight:700;letter-spacing:.02em}
+.w .big{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-top:auto}
+.w .muted{font-size:.8rem;color:#6b5d65}
+.w .pill{display:inline-flex;align-items:center;gap:.3rem;margin-top:.5rem;padding:.35rem .7rem;border-radius:999px;background:#0f7b6c;color:#fff;font-size:.78rem;font-weight:700;align-self:flex-start}
+.ringmini{width:62px;height:62px;border-radius:50%;background:conic-gradient(#b03a74 0 25%,#f3d6e3 0);display:grid;place-items:center;margin:auto 0 .4rem}
+.ringmini::after{content:"1/4";width:48px;height:48px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:800;color:#b03a74;font-size:.95rem}
+.ways{display:grid;gap:1rem}
+.way{display:flex;gap:1rem;align-items:flex-start;padding:1.1rem;border-radius:18px;background:var(--bg2);box-shadow:0 1px 0 var(--line)}
+.way p{margin:.15rem 0 0;color:var(--ink2);font-size:.98rem}
+
+/* privacy */
+.priv{background:radial-gradient(800px 500px at 50% 0%,var(--blush),transparent 70%)}
+.shield{width:120px;height:120px;margin:0 auto 1.5rem;border-radius:36px;display:grid;place-items:center;background:var(--bg2);box-shadow:var(--shadow);animation:pulse 4s ease-in-out infinite}
+.shield svg{width:60px;height:60px;color:var(--rose)}
+@keyframes pulse{50%{transform:scale(1.05) rotate(-3deg)}}
+.bounds{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin-top:2.5rem}
+@media (max-width:760px){.bounds{grid-template-columns:1fr}}
+.bounds .card h3{display:flex;gap:.5rem;align-items:center}
+.bounds ul{margin:.6rem 0 0;padding:0;list-style:none;display:grid;gap:.55rem;color:var(--ink2);font-size:1rem}
+.bounds li{display:flex;gap:.6rem}
+.yes li::before{content:"✓";color:var(--teal);font-weight:800}
+.no li::before{content:"✕";color:var(--red);font-weight:800}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:3rem}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{padding:1.3rem;border-radius:20px;background:var(--glass);border:1px solid var(--glass-line);text-align:center}
+.stat b{display:block;font-size:2.4rem;font-weight:800;letter-spacing:-.03em;color:var(--rose);line-height:1}
+.stat span{font-size:.92rem;color:var(--ink2)}
+
+/* footer */
+.cta-band{text-align:center;padding:clamp(4rem,8vw,6rem) 0;background:linear-gradient(160deg,var(--blush2),var(--mint))}
+.cta-band img{width:96px;height:96px;border-radius:24px;margin:0 auto 1.4rem;box-shadow:var(--shadow);animation:float 6s ease-in-out infinite}
+footer{padding:3rem 0 4rem;color:var(--ink2);font-size:.92rem;border-top:1px solid var(--line)}
+footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem}
+@media (max-width:760px){footer .cols{grid-template-columns:1fr}}
+footer h4{color:var(--ink);margin:0 0 .6rem;font-size:.95rem}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:.35rem}
+footer a{color:var(--ink2)}
+@media (max-width:520px){.home .w{aspect-ratio:auto;min-height:150px}.home .w .big{font-size:1.05rem;overflow-wrap:normal}.home .w>div{overflow-wrap:normal}}
+.disc{margin-top:2rem;padding:1rem 1.2rem;border-radius:16px;background:var(--bg2);font-size:.88rem}
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="top">
+
+<header class="top" id="top">
   <nav class="wrap nav" aria-label="Main">
-    <a class="brand" href="#top"><img src="assets/icon.svg" alt="" width="30" height="30">Teman</a>
+    <a class="brand" href="#"><img src="assets/icon-512.png" alt="" width="34" height="34">Teman</a>
     <ul>
-      <li><a href="#boundaries">Boundaries</a></li>
-      <li><a href="#journey">Journey</a></li>
-      <li><a href="#design">Design</a></li>
-      <li><a href="#ai">On-device AI</a></li>
-      <li><a href="#sources">Sources</a></li>
-      <li class="keep"><a href="https://github.com/cweekiat/teman">GitHub</a></li>
+      <li><a href="#demo">Demo</a></li>
+      <li><a href="#tour">Tour</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#languages">Languages</a></li>
+      <li><a href="#privacy">Privacy</a></li>
+      <li class="keep"><a href="support.html">Support</a></li>
     </ul>
   </nav>
 </header>
 
 <main id="main">
-<div class="wrap hero" id="top">
-  <div>
-    <div class="eyebrow">Concept iOS app · Singapore</div>
-    <h1>A <em>teman</em> for the cancer journey.</h1>
-    <p class="lede"><em>Teman</em> means "companion" in Malay. The app would help people with cancer in Singapore, and the people who care for them, to understand what they are told, find the right care, get to appointments, and walk into every consultation with the right questions.</p>
-    <div class="cta">
-      <a class="btn primary" href="https://github.com/cweekiat/teman/blob/main/docs/product.md">Read the Brainstorm</a>
-      <a class="btn ghost" href="https://github.com/cweekiat/teman">View on GitHub</a>
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="blob a"></div><div class="blob b"></div><div class="blob c"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <div class="chips"><span class="chip"><i></i>Free iPhone app</span><span class="chip">Made for Singapore</span><span class="chip">iOS 26</span></div>
+      <h1 id="hero-title">A gentle <span class="word" id="word" lang="en">companion</span><br>for cancer care.</h1>
+      <p class="lede">Teman helps people with cancer, and the people who care for them, keep track of treatment, medicines, visits and bills. Talk to it, or type. In English, 中文, Bahasa Melayu or தமிழ்.</p>
+      <div class="cta">
+        <a class="btn primary" href="#demo"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>Watch the 45-second demo</a>
+        <a class="btn glass" href="#tour">Take the tour</a>
+      </div>
+      <p class="status">Coming to the App Store in Singapore. A free community project. Not from MOH or any hospital.</p>
     </div>
-    <p class="status"><span class="tag">Status</span> Design and architecture only. No app has shipped, and nothing here is medical advice.</p>
-  </div>
-  <figure>
-    <div class="phone" role="img" aria-label="Mock-up of the Today screen: next appointment chemo cycle 3 at 10:30 at the National Cancer Centre, with a Leave Now button; three questions ready to ask; and a quick symptom log.">
-      <div class="screen" aria-hidden="true">
-        <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
-        <div class="title">Today</div>
-        <div class="row"><div class="muted">NEXT · 10:30</div><strong>Chemo cycle 3</strong><div class="muted">NCCS · Level 3, Clinic B<br>Outram Park MRT Exit 7 → link bridge</div><span class="pill">Leave Now · 32 min</span></div>
-        <div class="row"><strong>3 questions ready</strong><div class="muted">"Who do I call if I get a fever at night?"</div></div>
-        <div class="row"><strong>How are you today?</strong><div class="muted">Log tiredness, nausea, temperature…</div></div>
-        <div class="spacer"></div>
-        <div class="tabbar"><span class="on"><i>☀</i>Today</span><span><i>?</i>Ask</span><span><i>▤</i>Learn</span><span><i>▣</i>Binder</span><span><i>♡</i>Support</span></div>
+    <div class="stage" aria-hidden="true">
+      <div class="trio" id="trio">
+        <div class="phone p1"><img src="assets/screens/care.webp" alt=""></div>
+        <div class="phone p3"><img src="assets/screens/talk.webp" alt=""></div>
+        <div class="phone p2"><img src="assets/screens/today.webp" alt=""></div>
       </div>
     </div>
-  </figure>
-</div>
+  </div>
+</section>
 
-<section id="boundaries">
-  <div class="wrap">
-    <h2>Every promise is enforced in the design.</h2>
-    <p class="sub">Every boundary here is built into the product, and none of them is fine print. The model is never the source of truth, and the patient's medical team stays in charge.</p>
-    <div class="bounds" role="table" aria-label="What Teman does not do, and what it does instead">
-      <div class="h" role="columnheader">Teman never…</div><div class="h" role="columnheader">Instead, Teman…</div>
-      <div class="no" role="cell">Diagnoses cancer, or reads a result as good or bad</div><div class="yes" role="cell">Explains what the word means, cites the source, and suggests the question to ask</div>
-      <div class="no" role="cell">Chooses, compares or ranks treatments</div><div class="yes" role="cell">Explains how a treatment the doctor has named generally works, and helps prepare questions</div>
-      <div class="no" role="cell">Determines clinical-trial eligibility</div><div class="yes" role="cell">Explains what trials are and how to ask the oncologist about one</div>
-      <div class="no" role="cell">Replaces the medical team, or decides urgency</div><div class="yes" role="cell">Shows the patient's own care-team instructions and 995, using fixed rules rather than AI</div>
-      <div class="no" role="cell">Says anything medical without a source</div><div class="yes" role="cell">Attaches a named Singapore source and a "last checked" date to every medical sentence</div>
-      <div class="no" role="cell">Shares patient information</div><div class="yes" role="cell">Keeps everything on the iPhone, with no account, analytics or server. Data leaves only when the patient exports it</div>
+<!-- DEMO -->
+<section class="demo" id="demo" aria-labelledby="demo-title">
+  <div class="wrap demo-grid">
+    <div class="vid-stage">
+      <div class="vid" id="vid">
+        <video id="video" src="assets/video/teman-demo.mp4" poster="assets/video/poster.jpg" muted playsinline loop preload="metadata" aria-label="Teman product demo, 45 seconds"></video>
+        <button id="vbtn" type="button" aria-label="Play demo"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></button>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow">Product demo</p>
+      <h2 id="demo-title">One app for the <em>whole</em> journey.</h2>
+      <p class="sub">Forty-five seconds, start to finish. Everything shown runs on the iPhone, with example data.</p>
+      <ol class="steps" id="steps">
+        <li data-t="0"><span><strong>Today, at a glance</strong>Your cycle day, next visit, medicines and a gentle thought.</span></li>
+        <li data-t="9"><span><strong>Your plan, explained</strong>What your treatment usually involves, with the source.</span></li>
+        <li data-t="18"><span><strong>Talk to Teman</strong>Ask anything by voice. It answers from what's in the app.</span></li>
+        <li data-t="27"><span><strong>Money in plain words</strong>Is my drug covered? What does this bill mean?</span></li>
+        <li data-t="36"><span><strong>Help when you need it</strong>The right NCCS number, support groups, and Breathe with Me.</span></li>
+      </ol>
     </div>
   </div>
 </section>
 
-<section id="voices">
+<!-- TOUR -->
+<section id="tour" aria-labelledby="tour-title">
   <div class="wrap">
-    <h2>Built around what patients and caregivers say.</h2>
-    <p class="sub">Three things patients and caregivers say, and the features that answer them.</p>
-    <div class="grid g3">
-      <div class="quote"><blockquote>"You have to be a huge patient advocate. Push for answers. Push for biopsies. Push for proper testing. Ask questions."</blockquote>
-        <p class="ans"><strong>Ask:</strong> a question builder seeded from NCCS and SCS lists, "questions about tests", and a visit-mode checklist so nothing is left unanswered.</p></div>
-      <div class="quote"><blockquote>"I need help navigating difficult conversations and advocating for myself."</blockquote>
-        <p class="ans"><strong>Conversations:</strong> private rehearsal and scripts for the doctor, family, children and an employer, a "What matters to me" card, and words for asking for a second opinion.</p></div>
-      <div class="quote"><blockquote>"The volume of doctors, documents, and insurance paperwork can quickly become overwhelming."</blockquote>
-        <p class="ans"><strong>Binder and Money:</strong> scan a letter and the app reads it on-device and files it, a "who's who" care team, and plain-language MediShield Life, Cancer Drug List and MediFund cards.</p></div>
+    <div class="center rv">
+      <p class="eyebrow">Five tabs</p>
+      <h2 id="tour-title">Simple enough for <em>tired</em> days.</h2>
+      <p class="sub">Large text, big buttons, few words and soft colours. Built with Apple's design guidelines and Liquid Glass, and works at the largest text sizes.</p>
     </div>
-  </div>
-</section>
-
-<section id="journey">
-  <div class="wrap">
-    <h2>Seven stages, one companion.</h2>
-    <p class="sub">Teman meets people where they are, and shows only what fits that moment. Content about palliative care stays hidden until the patient chooses to open it.</p>
-    <ol class="journey">
-      <li><strong>Just diagnosed</strong><span>Words I heard, scan my report, the first week</span></li>
-      <li><strong>Care team</strong><span>Who is who, who to call, the Medical Social Worker</span></li>
-      <li><strong>Planning treatment</strong><span>Question builder, visit mode, second opinion</span></li>
-      <li><strong>Paying for care</strong><span>MediShield Life, CDL, MediSave, MediFund, charity funds</span></li>
-      <li><strong>During treatment</strong><span>Reminders, getting there, side effects, when to call</span></li>
-      <li><strong>Mind and family</strong><span>Check-in, psychosocial care, caregivers, conversations</span></li>
-      <li><strong>What's next</strong><span>Survivorship, or palliative care offered early and gently</span></li>
-    </ol>
-  </div>
-</section>
-
-<section id="design">
-  <div class="wrap">
-    <h2>Designed with Apple's Human Interface Guidelines.</h2>
-    <p class="sub">A standard five-tab structure, text that scales to the largest accessibility sizes, 60-point targets for hands affected by neuropathy, and Lock Screen notices that never name a diagnosis. <a href="https://github.com/cweekiat/teman/blob/main/docs/design-hig.md">Read the design doc</a>.</p>
-    <div class="phones">
-      <figure>
-        <div class="phone" role="img" aria-label="Mock-up of visit mode: a checklist of questions for Dr Lim, two of five answered, with a dictated answer note under the first.">
-          <div class="screen" aria-hidden="true">
-            <div class="sb"><span>10:42</span><span>●●● ▮</span></div>
-            <div class="title">Visit · Dr Lim</div>
-            <div class="row">
-              <div class="chk"><span class="box on">✓</span><div><strong>What type and stage is it?</strong><div class="muted">Note: "Stage II. Pathology report next week."</div></div></div>
-              <div class="chk"><span class="box on">✓</span><div><strong>Which tests are still pending?</strong></div></div>
-              <div class="chk"><span class="box"></span><div><strong>What is the goal of this treatment?</strong></div></div>
-              <div class="chk"><span class="box"></span><div><strong>Who can talk to me about costs?</strong></div></div>
-              <div class="chk"><span class="box"></span><div><strong>Who do I call after hours?</strong></div></div>
-            </div>
-            <div class="row muted">2 of 5 answered · Recording on this iPhone</div>
-            <div class="spacer"></div>
-            <div class="tabbar"><span><i>☀</i>Today</span><span class="on"><i>?</i>Ask</span><span><i>▤</i>Learn</span><span><i>▣</i>Binder</span><span><i>♡</i>Support</span></div>
-          </div>
+    <div class="story">
+      <div class="story-phone" aria-hidden="true">
+        <div class="flip" id="flip">
+          <div class="phone front"><img id="flipFront" src="assets/screens/today.webp" alt=""></div>
+          <div class="phone back"><img id="flipBack" src="assets/screens/care.webp" alt=""></div>
         </div>
-        <figcaption class="caption">Visit mode: start with the most important questions, as NCCS suggests, and tick them off.</figcaption>
-      </figure>
-      <figure>
-        <div class="phone" role="img" aria-label="Mock-up of a glossary entry for neutropenia with a plain-language definition, a question to ask the doctor, and a citation chip reading NCCS, Chemotherapy side effects, checked November 2026.">
-          <div class="screen" aria-hidden="true">
-            <div class="sb"><span>21:08</span><span>●●● ▮</span></div>
-            <div class="title">Learn</div>
-            <div class="row"><div class="word">Neutropenia</div><div class="muted">noun · new-tro-PEE-nee-a</div>
-              <p style="margin:.5rem 0 0">A low number of a type of white blood cell. Chemotherapy can lower it, which makes infections more likely.</p>
-              <span class="cite">NCCS · Chemotherapy side effects · checked Nov 2026</span></div>
-            <div class="row"><div class="muted">ASK YOUR DOCTOR</div><strong>"What temperature should make me call you, and which number do I call?"</strong><span class="pill">+ Add to Questions</span></div>
-            <div class="row muted">Drafted on this iPhone · Edit · Read the source</div>
-            <div class="spacer"></div>
-            <div class="tabbar"><span><i>☀</i>Today</span><span><i>?</i>Ask</span><span class="on"><i>▤</i>Learn</span><span><i>▣</i>Binder</span><span><i>♡</i>Support</span></div>
-          </div>
-        </div>
-        <figcaption class="caption">Every medical sentence carries its source. Teman explains words and never interprets your results.</figcaption>
-      </figure>
-    </div>
-    <div class="grid g4" style="margin-top:2.2rem">
-      <div class="card"><h3>Accessibility first</h3><p>Dynamic Type to AX5, VoiceOver labels on every control, Reduce Motion, and meaning never carried by colour alone.</p></div>
-      <div class="card"><h3>Ask in context</h3><p>No permission prompts at launch. Each permission is requested when its feature is first used, with a one-sentence reason.</p></div>
-      <div class="card"><h3>Honest notifications</h3><p>Time Sensitive only for "leave now". Medicines use AlarmKit. Teman sends no marketing.</p></div>
-      <div class="card"><h3>Four languages</h3><p>English, Chinese, Malay and Tamil, with large text and read-aloud for tired eyes.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="frameworks">
-  <div class="wrap">
-    <h2>Native iOS, for holistic care.</h2>
-    <p class="sub">Apple's own frameworks run on the device, are accessible by default, and work offline. <a href="https://github.com/cweekiat/teman/blob/main/docs/frameworks.md">Full framework map</a>.</p>
-    <div class="tablewrap"><table>
-      <thead><tr><th scope="col">Care need</th><th scope="col">Frameworks</th></tr></thead>
-      <tbody>
-        <tr><td>Understanding documents</td><td><code>VisionKit</code> scan · <code>Vision</code> document reading · <code>Foundation Models</code> extraction · <code>NaturalLanguage</code> search</td></tr>
-        <tr><td>Appointments and getting there</td><td><code>UserNotifications</code> · <code>EventKit</code> (write-only) · <code>ActivityKit</code> Live Activities · <code>MapKit</code> transit ETA · <code>WidgetKit</code></td></tr>
-        <tr><td>Medicines and symptoms</td><td><code>AlarmKit</code> · <code>HealthKit</code> (optional) · <code>PDFKit</code> "Since my last visit" export</td></tr>
-        <tr><td>Speaking up</td><td><code>Speech</code> (SpeechAnalyzer) on-device visit transcripts · <code>AVSpeechSynthesizer</code> read-aloud · <code>App Intents</code> for Siri</td></tr>
-        <tr><td>Languages</td><td>Human-localised UI · <code>Translation</code> for cited content, labelled as machine-translated</td></tr>
-        <tr><td>Privacy</td><td><code>SwiftData</code> with file protection · <code>CryptoKit</code> · Keychain · <code>LocalAuthentication</code> app lock</td></tr>
-      </tbody>
-    </table></div>
-  </div>
-</section>
-
-<section id="ai">
-  <div class="wrap">
-    <h2>On-device AI that reads, rewrites and drafts, and never decides.</h2>
-    <p class="sub">Local language models (Apple's Foundation Models by default, with optional open-weight packs such as a phone-sized SEA-LION for Southeast Asian languages) run entirely on the iPhone. Teman's design assumes a small model will sometimes be wrong, so the model never acts as a source of truth. <a href="https://github.com/cweekiat/teman/blob/main/docs/on-device-llm.md">Read the LLM brainstorm</a>.</p>
-    <div class="pipe" aria-label="Answer pipeline">
-      <div class="stop"><strong>Red-flag gate.</strong> Fixed rules catch fever, bleeding or breathlessness and show the care team's instructions and 995.</div>
-      <div class="stop"><strong>Scope gate.</strong> Requests to diagnose, choose treatment, check eligibility or give prognosis go to "Ask your doctor".</div>
-      <div><strong>Retrieve.</strong> Search only the bundled, reviewed Singapore source library.</div>
-      <div><strong>Generate.</strong> Guided generation: every sentence must name its source.</div>
-      <div><strong>Verify.</strong> Drop uncited, unsupported or interpretive sentences.</div>
-      <div><strong>Show.</strong> Citation chips, "Drafted on this iPhone", and Edit, Retry or Discard.</div>
-    </div>
-    <div class="grid g4" style="margin-top:1.4rem">
-      <div class="card"><h3>Explain a word</h3><p>A Primary 6-level definition, built only from cited passages.</p></div>
-      <div class="card"><h3>Read my letter</h3><p>Extracts the date, time, place and preparation, and you confirm before saving.</p></div>
-      <div class="card"><h3>Suggest questions</h3><p>Picks from a curated question library and rewords for you. It never invents clinical questions.</p></div>
-      <div class="card"><h3>Summarise my visit</h3><p>A draft from your own on-device recording, with quotes, for you to check.</p></div>
+      </div>
+      <div>
+        <article class="chapter" data-img="today">
+          <span class="tab"><b>1</b>Today</span>
+          <h3>Everything for today, in one place.</h3>
+          <p>Open Teman and see what matters now.</p>
+          <ul><li>Which cycle and day you're on, and when blood counts are usually lowest</li><li>Your next visit, with a countdown to leave and directions in Maps</li><li>Today's medicines, ticked off with one tap</li><li>A short, kind thought for the day</li></ul>
+          <img class="mobile-shot phone" src="assets/screens/today.webp" alt="Today screen showing AC chemotherapy cycle 1 of 4, day 10 of 21, and the next appointment" loading="lazy">
+        </article>
+        <article class="chapter" data-img="care">
+          <span class="tab"><b>2</b>My Care</span>
+          <h3>Your plan, counted and explained.</h3>
+          <p>Add your diagnosis and treatment by speaking, typing or taking a photo of your plan.</p>
+          <ul><li>27 cancer types and 30 common treatment plans explained simply, each with its source</li><li>The medicines, a usual cycle, and what to watch for</li><li>Questions for your doctor, a How I Feel diary and visit notes</li><li>Words: tap a term you heard and hear it explained</li></ul>
+          <img class="mobile-shot phone" src="assets/screens/care.webp" alt="My Care screen with the treatment plan and cycle progress" loading="lazy">
+        </article>
+        <article class="chapter" data-img="talk">
+          <span class="tab"><b>3</b>Talk</span>
+          <h3>Ask anything, by voice or text.</h3>
+          <p>Teman listens, answers and reads replies aloud in a natural male or female voice.</p>
+          <ul><li>Answers come from what's in the app: your plan, drug coverage, contacts and support</li><li>Add a photo of a label, bill or letter and Teman reads it</li><li>Runs with Apple's on-device model. Nothing is sent to a server</li><li>Gentle haptics as it listens and replies</li></ul>
+          <img class="mobile-shot phone" src="assets/screens/talk.webp" alt="Talk screen with a conversation about drug coverage" loading="lazy">
+        </article>
+        <article class="chapter" data-img="medicines">
+          <span class="tab"><b>4</b>Binder</span>
+          <h3>Medicines and papers, kept tidy.</h3>
+          <p>Scan a medicine label or a letter. Teman reads it on the iPhone.</p>
+          <ul><li>Medicine reminders with a Taken button on the notification</li><li>A second reminder 30 minutes later if you haven't tapped it</li><li>Scanned letters, reports, PDFs and bills in one place</li><li>Edit or delete anything, any time</li></ul>
+          <img class="mobile-shot phone" src="assets/screens/medicines.webp" alt="Binder screen listing today's medicines" loading="lazy">
+        </article>
+        <article class="chapter" data-img="help">
+          <span class="tab"><b>5</b>Help</span>
+          <h3>The right help, a tap away.</h3>
+          <p>995 and your care team at the top. Then everything else.</p>
+          <ul><li>"I need to…": the right NCCS contact, with the words ready to say</li><li>Money and bills: Cancer Drug List, CPF, insurance, financial help</li><li>Meet others: support groups, talks, art and music</li><li>Breathe with Me, with voice, visuals and gentle vibration</li></ul>
+          <img class="mobile-shot phone" src="assets/screens/help.webp" alt="Help screen with 995, Care Team, I need to, Money and bills, Meet others and Give back" loading="lazy">
+        </article>
+      </div>
     </div>
   </div>
 </section>
 
-<section id="privacy">
+<!-- FEATURES -->
+<section id="features" aria-labelledby="feat-title" style="background:linear-gradient(180deg,var(--bg),var(--mint) 55%,var(--bg))">
   <div class="wrap">
-    <h2>Nothing to leak.</h2>
-    <p class="sub">The safest patient data is data the publisher never holds. <a href="https://github.com/cweekiat/teman/blob/main/docs/safety-and-privacy.md">Safety and privacy doc</a>.</p>
-    <div class="grid g3">
-      <div class="card"><h3>No account, no server</h3><p>Teman has no sign-up, analytics or third-party SDKs. Its App Store label would read "Data Not Collected".</p></div>
-      <div class="card"><h3>Encrypted on the iPhone</h3><p>Complete file protection, CryptoKit-encrypted documents, and an optional Face ID lock.</p></div>
-      <div class="card"><h3>You choose what to share</h3><p>Exports open in the share sheet with a preview. Teman points to HealthHub Caregiver Access for official record sharing.</p></div>
+    <div class="center rv">
+      <p class="eyebrow">Features</p>
+      <h2 id="feat-title">Small helps that add up.</h2>
+      <p class="sub">Built from what patients and caregivers in Singapore say they need: understanding, keeping track, and speaking up.</p>
+    </div>
+    <div class="cards">
+      <article class="card rv tilt"><div class="ico t-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div><h3>Is my drug covered?</h3><p>A yes, no or "check" answer for each drug in your plan, matched to your cancer, from MOH's Cancer Drug List.</p></article>
+      <article class="card rv tilt"><div class="ico t-rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 3h16v18l-3-2-3 2-2-2-2 2-3-2-3 2z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div><h3>Understand my bill</h3><p>Scan a bill or open the HealthHub PDF. See subsidy, MediShield Life, insurance, MediSave and what's left for you.</p></article>
+      <article class="card rv tilt"><div class="ico t-lilac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></div><h3>Explained, with sources</h3><p>27 cancer types and 30 treatment plans in plain words. Every medical sentence names where it came from.</p></article>
+      <article class="card rv tilt"><div class="ico t-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div><h3>Reminders that wait for you</h3><p>Medicines, when to leave for a visit, and the day before each cycle. Tap Taken on the notification itself.</p></article>
+      <article class="card rv tilt"><div class="ico t-rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></div><h3>Ask Doctor</h3><p>Questions ready for each visit, suggested for your treatment. Note the answers and follow-ups after.</p></article>
+      <article class="card rv tilt"><div class="ico t-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div><h3>How I Feel</h3><p>Log symptoms and temperature in seconds. Charts and a summary to share with your doctor.</p></article>
+      <article class="card rv tilt"><div class="ico t-lilac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z"/><path d="M12 6v6l4 2"/></svg></div><h3>Calendar, your way</h3><p>Bring visits in from your Calendar, or add them yourself. Leave Now opens directions in Maps.</p></article>
+      <article class="card rv tilt"><div class="ico t-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></div><h3>Meet others, give back</h3><p>NCCS and community support groups, talks and activities, plus ways to volunteer.</p></article>
+      <article class="card rv tilt"><div class="ico t-rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></svg></div><h3>Breathe with Me</h3><p>A calm, guided breath with a growing circle, a soft voice and gentle vibration.</p></article>
+    </div>
+    <div class="stats rv" aria-label="Teman in numbers">
+      <div class="stat"><b data-count="27">27</b><span>cancer types explained</span></div>
+      <div class="stat"><b data-count="30">30</b><span>treatment plans</span></div>
+      <div class="stat"><b data-count="410">410</b><span>Cancer Drug List entries</span></div>
+      <div class="stat"><b data-count="4">4</b><span>languages</span></div>
     </div>
   </div>
 </section>
 
-<section id="sources">
+<!-- GALLERY RING -->
+<section id="gallery" aria-labelledby="gal-title">
   <div class="wrap">
-    <h2>Trusted Singapore sources, always cited.</h2>
-    <p class="sub">Medical and financial facts come from Singapore public bodies and national cancer centres first, then established Singapore charities. International sources are used for definitions only, and are labelled. <a href="https://github.com/cweekiat/teman/blob/main/docs/sources.md">Full source registry</a>.</p>
-    <ul class="src">
-      <li><a href="https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/medishield-life/cancer-drug-list/">MOH · Cancer Drug List</a></li>
-      <li><a href="https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/medishield-life/medishield-life-benefits/">MOH · MediShield Life benefits</a></li>
-      <li><a href="https://www.moh.gov.sg/newsroom/no-one-will-be-denied-appropriate-cancer-care-due-to-an-inability-to-pay/">MOH · No one denied cancer care due to inability to pay</a></li>
-      <li><a href="https://synapxe.sg/healthtech/national-programmes/healthhub">HealthHub (MOH and Synapxe)</a></li>
-      <li><a href="https://www.nccs.com.sg/patient-care/questions-a-cancer-patient-should-ask-at-their-first-clinic-appointment">NCCS · Questions to ask at your first appointment</a></li>
-      <li><a href="https://www.nccs.com.sg/your-care/caregiver-support/talking-to-the-doctor">NCCS · Talking to the doctor</a></li>
-      <li><a href="https://www.nccs.com.sg/your-care/patient-support/chemotherapy-side-effects">NCCS · Chemotherapy side effects</a></li>
-      <li><a href="https://www.nccs.com.sg/our-specialties/psychosocial-oncology">NCCS · Psychosocial Oncology</a></li>
-      <li><a href="https://www.nccs.com.sg/clinic-visit/charges-and-payment/medisave-medishield-life-medifund">NCCS · MediSave, MediShield Life, MediFund</a></li>
-      <li><a href="https://nccs.com.sg/patient-care/visitor-information">NCCS · Getting here</a></li>
-      <li><a href="https://www.ncis.com.sg/cancer-information/chemotherapy/chemotherapy-side-effects">NCIS · Chemotherapy side effects</a></li>
-      <li><a href="https://ncis.com.sg/our-services/specialties/psychosocial-oncology">NCIS · Psychosocial Oncology</a></li>
-      <li><a href="https://singaporecancersociety.org.sg/understanding-your-diagnosis-treatment/">Singapore Cancer Society · Understanding your diagnosis</a></li>
-      <li><a href="https://singaporecancersociety.org.sg/hospital-transportation-assistance/">Singapore Cancer Society · Hospital transport</a></li>
-      <li><a href="https://singaporecancersociety.org.sg/?p=8930">Singapore Cancer Society · Financial assistance</a></li>
-      <li><a href="https://www.healthxchange.sg/cancer/coping-tips/cope-chemotherapy-side-effects-nausea-hair-loss-bleeding">SingHealth HealthXchange · Coping with side effects</a></li>
-      <li><a href="https://www.bcf.org.sg">Breast Cancer Foundation</a></li>
-      <li><a href="https://www.ccf.org.sg">Children's Cancer Foundation</a></li>
-      <li><a href="https://singaporehospice.org.sg/">Singapore Hospice Council</a></li>
-      <li><a href="https://www.hsa.gov.sg/announcements/regulatory-updates/update-for-guidelines-on-risk-classification-of-samd-and-qualification-of-clinical-decision-support-software-(cdss)">HSA · SaMD and CDSS guidelines</a></li>
-      <li><a href="https://www.pdpc.gov.sg/organisations/regulations-decisions/regulatory-guidance/advisory-guidelines-for-the-healthcare-sector">PDPC · Healthcare sector guidelines</a></li>
-      <li><a href="https://developer.apple.com/design/human-interface-guidelines/">Apple · Human Interface Guidelines</a></li>
-    </ul>
+    <div class="center rv">
+      <p class="eyebrow">Screens</p>
+      <h2 id="gal-title">Take a <em>spin</em>.</h2>
+      <p class="sub">Drag or swipe to turn the ring. These are real screens from the app, with example data.</p>
+    </div>
+  </div>
+  <div class="ring-wrap" id="ringWrap" role="region" aria-roledescription="carousel" aria-label="App screens. Use the left and right arrow keys to turn." tabindex="0">
+    <div class="ring" id="ring"></div>
+  </div>
+  <p class="ring-hint" id="ringHint">Drag to turn · ← → keys work too</p>
+</section>
+
+<!-- LANGUAGES -->
+<section class="langs" id="languages" aria-labelledby="lang-title">
+  <div class="wrap">
+    <div class="center rv">
+      <p class="eyebrow">Four languages</p>
+      <h2 id="lang-title">Speaks <em>your</em> language.</h2>
+      <p class="sub">The whole app in English, Chinese, Malay and Tamil: screens, reminders, widgets and Teman's replies. Switch any time in Settings.</p>
+    </div>
+    <div class="lang-row rv">
+      <div class="lang-card"><div class="phone"><img src="assets/screens/zh-today.webp" alt="Today screen in Chinese" loading="lazy"></div><b lang="zh">中文</b><span>Chinese</span></div>
+      <div class="lang-card"><div class="phone"><img src="assets/screens/ms-today.webp" alt="Today screen in Malay" loading="lazy"></div><b lang="ms">Bahasa Melayu</b><span>Malay</span></div>
+      <div class="lang-card"><div class="phone"><img src="assets/screens/ta-today.webp" alt="Today screen in Tamil" loading="lazy"></div><b lang="ta">தமிழ்</b><span>Tamil</span></div>
+    </div>
+    <div class="voice-pills rv">
+      <span class="chip">Female or male voice</span>
+      <span class="chip">Uses the most natural voice on your iPhone</span>
+      <span class="chip">Tamil voice input through the Tamil keyboard</span>
+    </div>
   </div>
 </section>
 
-<section>
-  <div class="wrap">
-    <div class="emergency" role="note">
-      <strong>In an emergency, call 995.</strong>
-      <span>Teman is a concept, not a medical service. If you are on cancer treatment and feel unwell, call the number your care team gave you. For support, the <a href="https://www.nccs.com.sg/contact-us">NCCS Cancer Helpline</a> and the <a href="https://singaporecancersociety.org.sg/connect-with-us/">Singapore Cancer Society</a> can help.</span>
+<!-- WIDGETS -->
+<section id="widgets" aria-labelledby="w-title">
+  <div class="wrap wgrid">
+    <div class="home rv" aria-hidden="true">
+      <div class="w"><small style="color:#0f7b6c">MEDICINE</small><div class="muted" style="margin-top:.4rem">Next at 1:00 PM</div><div class="big">Mouthwash</div><span class="pill">✓ Taken</span></div>
+      <div class="w"><small style="color:#b03a74">TREATMENT</small><div class="ringmini"></div><div style="font-weight:800">AC chemotherapy</div><div class="muted">Day 10 of 21</div></div>
+      <div class="w wide"><small style="color:#2563c9">NEXT APPOINTMENT</small><div class="big" style="font-size:1.25rem;margin-top:.5rem">Review with oncologist</div><div class="muted">Sat 10:30 AM · NCCS, Level 3, Clinic B</div><div class="muted" style="margin-top:auto;font-weight:700;color:#b03a74">Leave 9:45 AM</div></div>
     </div>
+    <div>
+      <p class="eyebrow">Quick ways in</p>
+      <h2 id="w-title">There when you <em>need</em> it.</h2>
+      <p class="sub" style="margin-bottom:1.5rem">No hunting for the app on a hard day.</p>
+      <div class="ways">
+        <div class="way rv"><div class="ico t-rose" style="margin:0;flex:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="18" height="7" rx="1.5"/></svg></div><div><h3>Widgets</h3><p>Up Next, Medicine, Next Appointment and Treatment. Mark a medicine taken from the Home Screen.</p></div></div>
+        <div class="way rv"><div class="ico t-teal" style="margin:0;flex:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M4 7v3"/></svg></div><div><h3>Action button and Control Center</h3><p>Press once to talk to Teman or log how you feel.</p></div></div>
+        <div class="way rv"><div class="ico t-lilac" style="margin:0;flex:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/></svg></div><div><h3>Siri</h3><p>Say "Talk to Teman" or "Next appointment in Teman".</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section class="priv" id="privacy" aria-labelledby="p-title">
+  <div class="wrap">
+    <div class="center rv">
+      <div class="shield" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.7 9a1 1 0 0 1-.7 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.2 1.2 0 0 1 1.6 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><rect x="9" y="10" width="6" height="5" rx="1"/><path d="M10 10V8.5a2 2 0 0 1 4 0V10"/></svg></div>
+      <p class="eyebrow">Private by design</p>
+      <h2 id="p-title">Your story stays <em>on your iPhone</em>.</h2>
+      <p class="sub">No account. No server. No ads. No tracking. The developer never sees your information, because it never leaves your phone unless you share it.</p>
+    </div>
+    <div class="bounds">
+      <div class="card rv yes"><h3>What Teman does</h3><ul>
+        <li>Keeps everything on the iPhone, encrypted when it's locked</li>
+        <li>Locks with Face ID if you want, and hides medicine names on the Lock Screen</li>
+        <li>Reads text, speech and photos on the device</li>
+        <li>Lets you copy or delete all your data any time</li>
+        <li>Shows a source for every medical explanation</li>
+      </ul></div>
+      <div class="card rv no"><h3>What Teman never does</h3><ul>
+        <li>Diagnose cancer or read results as good or bad</li>
+        <li>Choose, compare or rank treatments</li>
+        <li>Decide if you can join a clinical trial</li>
+        <li>Replace your doctor, nurse or pharmacist</li>
+        <li>Share or sell your information</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band" aria-labelledby="c-title">
+  <div class="wrap">
+    <img src="assets/icon-512.png" alt="Teman app icon: a pink heart" width="96" height="96">
+    <h2 id="c-title">Coming soon to the App Store.</h2>
+    <p class="sub" style="margin-inline:auto">Free, with every feature included. An optional tip helps keep it going.</p>
+    <div class="cta" style="justify-content:center"><a class="btn primary" href="#demo">Watch the demo</a><a class="btn glass" href="support.html">Get support</a></div>
   </div>
 </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <p>Teman is a concept and design project. It does not diagnose cancer, choose treatment, determine trial eligibility, or replace your medical team. Source content belongs to its publishers. Teman links to and cites it, and does not republish it.</p>
-    <p>Documentation CC BY 4.0 · Code samples MIT · <a href="https://github.com/cweekiat/teman">github.com/cweekiat/teman</a></p>
+    <div class="cols">
+      <div><a class="brand" href="#"><img src="assets/icon-512.png" alt="" width="34" height="34">Teman</a>
+        <p>"Teman" means companion in Malay. A free community project by a volunteer developer, for people with cancer in Singapore and those who care for them.</p></div>
+      <div><h4>Legal</h4><ul><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Disclaimer and Terms</a></li><li><a href="support.html">Support</a></li></ul></div>
+      <div><h4>Behind the app</h4><ul><li><a href="https://github.com/cweekiat/teman/blob/main/docs/sources.md">Sources</a></li><li><a href="https://github.com/cweekiat/teman/blob/main/docs/privacy-compliance.md">Privacy and PDPA notes</a></li><li><a href="https://github.com/cweekiat/teman/blob/main/docs/design-hig.md">Design notes</a></li></ul></div>
+    </div>
+    <p class="disc"><strong>Important.</strong> Teman is not developed, endorsed or reviewed by MOH, HealthHub, NCCS, NCIS or any hospital. It does not give medical, financial or insurance advice, diagnose, or choose treatment. Always follow your care team. In an emergency, call 995. Feeling low? Samaritans of Singapore, 1767, 24 hours.</p>
   </div>
 </footer>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = s => document.querySelector(s);
+
+  // nav background
+  const top = $('#top');
+  const onScrollNav = () => top.classList.toggle('solid', scrollY > 30);
+  addEventListener('scroll', onScrollNav, {passive:true}); onScrollNav();
+
+  // rotating word
+  const words = [['companion','en'],['伙伴','zh'],['teman','ms'],['துணை','ta']];
+  const w = $('#word'); let wi = 0;
+  if (!reduce) setInterval(() => {
+    w.classList.add('out');
+    setTimeout(() => { wi = (wi+1)%words.length; w.textContent = words[wi][0]; w.lang = words[wi][1]; w.classList.remove('out'); }, 450);
+  }, 2600);
+
+  // hero tilt follows pointer
+  const trio = $('#trio');
+  if (!reduce && matchMedia('(pointer:fine)').matches) {
+    addEventListener('pointermove', e => {
+      const x = e.clientX/innerWidth - .5, y = e.clientY/innerHeight - .5;
+      trio.style.transform = `rotateY(${-22 + x*18}deg) rotateX(${10 - y*12}deg)`;
+    }, {passive:true});
+  }
+
+  // reveal on scroll
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold:.15});
+  document.querySelectorAll('.rv').forEach((el,i) => { el.style.transitionDelay = (el.classList.contains('card') ? (i%3)*90 : 0)+'ms'; io.observe(el); });
+
+  // card 3D tilt
+  if (!reduce && matchMedia('(pointer:fine)').matches) document.querySelectorAll('.tilt').forEach(c => {
+    c.addEventListener('pointermove', e => { const r = c.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5; c.style.transform=`rotateY(${x*14}deg) rotateX(${-y*14}deg) translateZ(10px)`; });
+    c.addEventListener('pointerleave', () => c.style.transform = '');
+  });
+
+  // video: flatten as it scrolls into view; play when visible
+  const vid = $('#vid'), video = $('#video'), vbtn = $('#vbtn');
+  const playIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>';
+  const pauseIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
+  let userPaused = false;
+  const setBtn = () => { const p = video.paused; vbtn.innerHTML = p ? playIcon : pauseIcon; vbtn.setAttribute('aria-label', p ? 'Play demo' : 'Pause demo'); };
+  vbtn.addEventListener('click', () => { if (video.paused) { userPaused = false; video.play(); } else { userPaused = true; video.pause(); } });
+  video.addEventListener('play', setBtn); video.addEventListener('pause', setBtn);
+  const vio = new IntersectionObserver(([e]) => { if (e.isIntersecting && !userPaused && !reduce) video.play().catch(()=>{}); else if (!e.isIntersecting) video.pause(); }, {threshold:.5});
+  vio.observe(vid);
+  const flatten = () => {
+    if (reduce) { vid.style.setProperty('--rx','0deg'); vid.style.setProperty('--ry','0deg'); vid.style.setProperty('--sc','1'); return; }
+    const r = vid.getBoundingClientRect(); const p = Math.min(1, Math.max(0, 1 - (r.top + r.height/2 - innerHeight/2) / (innerHeight*.6)));
+    vid.style.setProperty('--rx', (24*(1-p)).toFixed(1)+'deg'); vid.style.setProperty('--ry', (-14*(1-p)).toFixed(1)+'deg'); vid.style.setProperty('--sc', (.9+.1*p).toFixed(3));
+  };
+  // step highlight follows video time
+  const steps = [...document.querySelectorAll('#steps li')];
+  video.addEventListener('timeupdate', () => { const t = video.currentTime; let k = 0; steps.forEach((s,i) => { if (t >= +s.dataset.t) k = i; }); steps.forEach((s,i) => s.classList.toggle('on', i===k)); });
+  steps.forEach(s => { s.style.cursor='pointer'; s.addEventListener('click', () => { video.currentTime = +s.dataset.t; if (video.paused) { userPaused=false; video.play(); } }); });
+  steps[0].classList.add('on');
+
+  // sticky story: 3D flip between screens
+  const flip = $('#flip'), front = $('#flipFront'), back = $('#flipBack');
+  let showingFront = true, current = 'today', angle = 0;
+  const sio = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    const img = e.target.dataset.img; if (img === current) return;
+    current = img; const src = `assets/screens/${img}.webp`;
+    if (showingFront) back.src = src; else front.src = src;
+    showingFront = !showingFront; angle += 180;
+    flip.style.transform = `rotateY(${angle}deg)`;
+    if (reduce) flip.style.transition = 'none';
+  }), {rootMargin:'-45% 0px -45% 0px'});
+  document.querySelectorAll('.chapter').forEach(c => sio.observe(c));
+
+  // 3D ring of screens
+  const shots = [['today','Today'],['care','My Care'],['regimen','Treatment explained'],['talk','Talk'],['coverage','Is my drug covered?'],['bill','Understand my bill'],['diary','How I Feel'],['ask','Ask Doctor'],['medicines','Binder'],['contact','I need to…'],['breathe','Breathe with Me'],['help','Help']];
+  const ring = $('#ring'), n = shots.length, radius = Math.round(150 / Math.tan(Math.PI/n)) + 60;
+  shots.forEach(([f,label],i) => {
+    const fig = document.createElement('figure'); fig.className = 'phone'; fig.style.margin = 0;
+    fig.style.transform = `rotateY(${i*360/n}deg) translateZ(${radius}px)`;
+    fig.innerHTML = `<img src="assets/screens/${f}.webp" alt="${label} screen" loading="lazy" draggable="false"><figcaption>${label}</figcaption>`;
+    ring.appendChild(fig);
+  });
+  let rot = 0, vel = reduce ? 0 : -0.12, dragging = false, lastX = 0, idle = 0;
+  const wrapEl = $('#ringWrap');
+  const apply = () => ring.style.transform = `translateZ(${-radius}px) rotateX(-6deg) rotateY(${rot}deg)`;
+  wrapEl.addEventListener('pointerdown', e => { dragging = true; lastX = e.clientX; wrapEl.setPointerCapture(e.pointerId); });
+  wrapEl.addEventListener('pointermove', e => { if (!dragging) return; const dx = e.clientX - lastX; lastX = e.clientX; rot += dx*.35; vel = dx*.35; apply(); });
+  const end = () => { dragging = false; idle = performance.now(); };
+  wrapEl.addEventListener('pointerup', end); wrapEl.addEventListener('pointercancel', end);
+  wrapEl.addEventListener('keydown', e => { if (e.key==='ArrowLeft'||e.key==='ArrowRight') { e.preventDefault(); rot += (e.key==='ArrowLeft'?1:-1)*360/n; vel = 0; idle = performance.now(); ring.style.transition='transform .5s'; apply(); setTimeout(()=>ring.style.transition='',500);} });
+  let visible = false; new IntersectionObserver(([e]) => visible = e.isIntersecting).observe(wrapEl);
+  const tick = (t) => {
+    if (visible && !dragging) {
+      if (Math.abs(vel) > .12) vel *= .95; else if (!reduce && t - idle > 1500) vel += ((-0.12) - vel)*.02; else if (reduce) vel = 0;
+      rot += vel; apply();
+    }
+    flatten();
+    requestAnimationFrame(tick);
+  };
+  apply(); requestAnimationFrame(tick);
+
+  // count-up stats
+  const cio = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return; cio.unobserve(e.target);
+    const el = e.target, to = +el.dataset.count; if (reduce) return;
+    const t0 = performance.now(); const step = t => { const p = Math.min(1,(t-t0)/1200); el.textContent = Math.round(to*(1-Math.pow(1-p,3))); if (p<1) requestAnimationFrame(step); }; requestAnimationFrame(step);
+  }), {threshold:.6});
+  document.querySelectorAll('[data-count]').forEach(el => cio.observe(el));
+})();
+</script>
 </body>
 </html>
