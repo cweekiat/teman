@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en-SG">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Teman: cancer care companion</title>
+<meta name="description" content="Teman is a concept iOS app that helps people with cancer in Singapore understand their diagnosis, get the right care, keep track of appointments, and ask their doctors the right questions. Every medical statement is cited. Everything stays on the iPhone.">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f5f4f7; --bg3:#ebe9ef; --ink:#1b1a1f; --ink2:#4c4a55; --line:#d9d6df;
+  --accent:#8e2a6b; --accent-ink:#ffffff; --accent-soft:#f6e7f0; --ok:#1f6b45; --warn:#8a4b00;
+  --radius:18px; --maxw:1120px;
+  --font: -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --serif: "New York", ui-serif, Georgia, "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#111014; --bg2:#1b1a20; --bg3:#26242c; --ink:#f2f0f5; --ink2:#b9b5c2; --line:#34313b;
+    --accent:#e58bc4; --accent-ink:#1b0d16; --accent-soft:#2c1a26; --ok:#7fd6a6; --warn:#f2b46b; }
+}
+@media (prefers-contrast: more){ :root{ --ink2:var(--ink); --line:var(--ink); } }
+*{box-sizing:border-box}
+html{font-size:106.25%; -webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.55}
+a{color:var(--accent);text-underline-offset:.18em}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
+.skip{position:absolute;left:-999px;top:0;background:var(--accent);color:var(--accent-ink);padding:.75rem 1rem;z-index:10}
+.skip:focus{left:1rem;top:1rem}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 max(16px, env(safe-area-inset-left))}
+header.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);border-bottom:1px solid var(--line)}
+@media (prefers-reduced-transparency: reduce){header.top{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none}}
+.nav{display:flex;align-items:center;gap:1rem;min-height:56px}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:700;color:var(--ink);text-decoration:none;font-size:1.1rem}
+.brand img{width:30px;height:30px}
+.nav ul{display:flex;gap:.25rem;list-style:none;margin:0 0 0 auto;padding:0;flex-wrap:wrap}
+.nav ul a{display:inline-flex;align-items:center;min-height:44px;padding:0 .7rem;color:var(--ink2);text-decoration:none;border-radius:10px;font-size:.92rem}
+.nav ul a:hover{background:var(--bg2);color:var(--ink)}
+@media (max-width:760px){.nav ul li:not(.keep){display:none}}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 1.2rem;border-radius:999px;font-weight:600;text-decoration:none}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{border:1.5px solid var(--line);color:var(--ink)}
+.hero{padding:clamp(2.5rem,7vw,5.5rem) 0 2rem;display:grid;grid-template-columns:1.15fr .85fr;gap:3rem;align-items:center}
+@media (max-width:900px){.hero{grid-template-columns:1fr}}
+.eyebrow{font-size:.85rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(2.1rem,5vw,3.3rem);line-height:1.08;margin:.4rem 0 1rem;letter-spacing:-.02em}
+h1 em{font-family:var(--serif);font-style:italic;font-weight:600;color:var(--accent)}
+.lede{font-size:1.18rem;color:var(--ink2);max-width:38rem}
+.cta{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.6rem}
+.status{margin-top:1.4rem;font-size:.9rem;color:var(--ink2)}
+section{padding:clamp(2.5rem,6vw,4.5rem) 0;border-top:1px solid var(--line);scroll-margin-top:56px}
+h2{font-size:clamp(1.6rem,3.4vw,2.2rem);line-height:1.15;margin:0 0 .6rem;letter-spacing:-.01em}
+.sub{color:var(--ink2);max-width:46rem;margin:0 0 2rem;font-size:1.05rem}
+h3{font-size:1.1rem;margin:0 0 .35rem}
+.grid{display:grid;gap:1rem}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:900px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:620px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--bg2);border-radius:var(--radius);padding:1.25rem 1.3rem}
+.card p{margin:.2rem 0 0;color:var(--ink2)}
+/* boundaries */
+.bounds{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.bounds div{padding:1rem 1.2rem;border-top:1px solid var(--line)}
+.bounds .h{background:var(--bg2);font-weight:700;border-top:0}
+.bounds .no::before{content:"✕ ";color:var(--warn);font-weight:700}
+.bounds .yes::before{content:"✓ ";color:var(--ok);font-weight:700}
+@media (max-width:620px){.bounds{grid-template-columns:1fr}.bounds .h:nth-child(2){display:none}.bounds .yes{border-top:0;padding-top:0;background:var(--bg)}}
+/* quotes */
+blockquote{margin:0;font-family:var(--serif);font-size:1.25rem;line-height:1.4}
+.quote{border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;padding:1.2rem 1.4rem}
+.quote .ans{font-family:var(--font);font-size:.98rem;color:var(--ink2);margin-top:.8rem}
+.quote .ans strong{color:var(--ink)}
+/* journey */
+ol.journey{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(7,1fr);gap:.6rem;counter-reset:s}
+@media (max-width:1000px){ol.journey{grid-template-columns:1fr}}
+ol.journey li{counter-increment:s;background:var(--bg2);border-radius:14px;padding:1rem;position:relative}
+ol.journey li::before{content:counter(s);display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.9rem;margin-bottom:.5rem}
+ol.journey strong{display:block}
+ol.journey span{color:var(--ink2);font-size:.92rem}
+/* phones */
+.phones{display:flex;gap:1.4rem;justify-content:center;flex-wrap:wrap}
+.phone{width:280px;border-radius:44px;background:#0b0b0d;padding:10px;box-shadow:0 1px 0 var(--line)}
+.screen{border-radius:36px;background:#f2f2f7;color:#000;min-height:560px;overflow:hidden;font-size:15px;display:flex;flex-direction:column}
+@media (prefers-color-scheme: dark){.screen{background:#000;color:#fff}.screen .row,.screen .tile{background:#1c1c1e!important}.screen .muted{color:#98989f!important}.screen .tabbar{background:rgba(30,30,32,.92)!important}}
+.screen .sb{display:flex;justify-content:space-between;padding:14px 26px 4px;font-weight:600;font-size:13px}
+.screen .title{font-size:28px;font-weight:700;padding:6px 18px 10px;letter-spacing:-.01em}
+.screen .row{background:#fff;margin:0 12px 10px;border-radius:14px;padding:12px 14px}
+.screen .muted{color:#6c6c70;font-size:13px}
+.screen .pill{display:inline-block;background:#8e2a6b;color:#fff;border-radius:999px;padding:7px 14px;font-weight:600;font-size:14px;margin-top:8px}
+.screen .chk{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid rgba(127,127,127,.2)}
+.screen .chk:first-of-type{border-top:0}
+.screen .box{flex:0 0 22px;height:22px;border-radius:50%;border:2px solid #8e2a6b;display:grid;place-items:center;font-size:13px;color:#fff}
+.screen .box.on{background:#8e2a6b}
+.screen .cite{display:inline-flex;gap:4px;align-items:center;background:rgba(142,42,107,.12);color:#8e2a6b;border-radius:8px;padding:3px 8px;font-size:12px;font-weight:600;margin-top:8px}
+@media (prefers-color-scheme: dark){.screen .cite{color:#e58bc4;background:rgba(229,139,196,.16)}}
+.screen .word{font-family:var(--serif);font-size:24px;font-weight:600}
+.screen .spacer{flex:1}
+.screen .tabbar{margin:8px 10px 12px;border-radius:26px;background:rgba(255,255,255,.92);display:flex;justify-content:space-around;padding:8px 4px;font-size:10px;font-weight:600}
+.screen .tabbar span{display:flex;flex-direction:column;align-items:center;gap:2px;color:#8a8a8e}
+.screen .tabbar span.on{color:#8e2a6b}
+@media (prefers-color-scheme: dark){.screen .tabbar span.on{color:#e58bc4}}
+.screen .tabbar i{font-style:normal;font-size:17px;line-height:1}
+.caption{text-align:center;color:var(--ink2);font-size:.92rem;margin-top:.7rem;max-width:280px}
+figure{margin:0}
+/* pipeline */
+.pipe{display:grid;grid-template-columns:repeat(6,1fr);gap:.5rem;counter-reset:p}
+@media (max-width:900px){.pipe{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.pipe{grid-template-columns:1fr}}
+.pipe div{background:var(--bg2);border-radius:14px;padding:.9rem;font-size:.93rem;counter-increment:p}
+.pipe div::before{content:counter(p) ". ";font-weight:700;color:var(--accent)}
+.pipe div.stop{background:var(--accent-soft)}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{text-align:left;padding:.7rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.82rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink2)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius)}
+.tag{display:inline-block;font-size:.78rem;font-weight:600;border-radius:6px;padding:.1rem .45rem;background:var(--bg3);color:var(--ink2)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;background:var(--bg3);padding:.08rem .35rem;border-radius:5px}
+ul.src{columns:2;column-gap:2rem;padding-left:1.1rem}
+@media (max-width:700px){ul.src{columns:1}}
+ul.src li{break-inside:avoid;margin-bottom:.45rem}
+.emergency{background:var(--accent-soft);border-radius:var(--radius);padding:1.2rem 1.4rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.emergency strong{font-size:1.4rem}
+footer{border-top:1px solid var(--line);padding:2.5rem 0 calc(2.5rem + env(safe-area-inset-bottom));color:var(--ink2);font-size:.92rem}
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <nav class="wrap nav" aria-label="Main">
+    <a class="brand" href="#top"><img src="assets/icon.svg" alt="" width="30" height="30">Teman</a>
+    <ul>
+      <li><a href="#boundaries">Boundaries</a></li>
+      <li><a href="#journey">Journey</a></li>
+      <li><a href="#design">Design</a></li>
+      <li><a href="#ai">On-device AI</a></li>
+      <li><a href="#sources">Sources</a></li>
+      <li class="keep"><a href="https://github.com/cweekiat/teman">GitHub</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+<div class="wrap hero" id="top">
+  <div>
+    <div class="eyebrow">Concept iOS app · Singapore</div>
+    <h1>A <em>teman</em> for the cancer journey.</h1>
+    <p class="lede"><em>Teman</em> means "companion" in Malay. The app would help people with cancer in Singapore, and the people who care for them, to understand what they are told, find the right care, get to appointments, and walk into every consultation with the right questions.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/cweekiat/teman/blob/main/docs/product.md">Read the Brainstorm</a>
+      <a class="btn ghost" href="https://github.com/cweekiat/teman">View on GitHub</a>
+    </div>
+    <p class="status"><span class="tag">Status</span> Design and architecture only. No app has shipped, and nothing here is medical advice.</p>
+  </div>
+  <figure>
+    <div class="phone" role="img" aria-label="Mock-up of the Today screen: next appointment chemo cycle 3 at 10:30 at the National Cancer Centre, with a Leave Now button; three questions ready to ask; and a quick symptom log.">
+      <div class="screen" aria-hidden="true">
+        <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="title">Today</div>
+        <div class="row"><div class="muted">NEXT · 10:30</div><strong>Chemo cycle 3</strong><div class="muted">NCCS · Level 3, Clinic B<br>Outram Park MRT Exit 7 → link bridge</div><span class="pill">Leave Now · 32 min</span></div>
+        <div class="row"><strong>3 questions ready</strong><div class="muted">"Who do I call if I get a fever at night?"</div></div>
+        <div class="row"><strong>How are you today?</strong><div class="muted">Log tiredness, nausea, temperature…</div></div>
+        <div class="spacer"></div>
+        <div class="tabbar"><span class="on"><i>☀</i>Today</span><span><i>?</i>Ask</span><span><i>▤</i>Learn</span><span><i>▣</i>Binder</span><span><i>♡</i>Support</span></div>
+      </div>
+    </div>
+  </figure>
+</div>
+
+<section id="boundaries">
+  <div class="wrap">
+    <h2>Every promise is enforced in the design.</h2>
+    <p class="sub">Every boundary here is built into the product, and none of them is fine print. The model is never the source of truth, and the patient's medical team stays in charge.</p>
+    <div class="bounds" role="table" aria-label="What Teman does not do, and what it does instead">
+      <div class="h" role="columnheader">Teman never…</div><div class="h" role="columnheader">Instead, Teman…</div>
+      <div class="no" role="cell">Diagnoses cancer, or reads a result as good or bad</div><div class="yes" role="cell">Explains what the word means, cites the source, and suggests the question to ask</div>
+      <div class="no" role="cell">Chooses, compares or ranks treatments</div><div class="yes" role="cell">Explains how a treatment the doctor has named generally works, and helps prepare questions</div>
+      <div class="no" role="cell">Determines clinical-trial eligibility</div><div class="yes" role="cell">Explains what trials are and how to ask the oncologist about one</div>
+      <div class="no" role="cell">Replaces the medical team, or decides urgency</div><div class="yes" role="cell">Shows the patient's own care-team instructions and 995, using fixed rules rather than AI</div>
+      <div class="no" role="cell">Says anything medical without a source</div><div class="yes" role="cell">Attaches a named Singapore source and a "last checked" date to every medical sentence</div>
+      <div class="no" role="cell">Shares patient information</div><div class="yes" role="cell">Keeps everything on the iPhone, with no account, analytics or server. Data leaves only when the patient exports it</div>
+    </div>
+  </div>
+</section>
+
+<section id="voices">
+  <div class="wrap">
+    <h2>Built around what patients and caregivers say.</h2>
+    <p class="sub">Three things patients and caregivers say, and the features that answer them.</p>
+    <div class="grid g3">
+      <div class="quote"><blockquote>"You have to be a huge patient advocate. Push for answers. Push for biopsies. Push for proper testing. Ask questions."</blockquote>
+        <p class="ans"><strong>Ask:</strong> a question builder seeded from NCCS and SCS lists, "questions about tests", and a visit-mode checklist so nothing is left unanswered.</p></div>
+      <div class="quote"><blockquote>"I need help navigating difficult conversations and advocating for myself."</blockquote>
+        <p class="ans"><strong>Conversations:</strong> private rehearsal and scripts for the doctor, family, children and an employer, a "What matters to me" card, and words for asking for a second opinion.</p></div>
+      <div class="quote"><blockquote>"The volume of doctors, documents, and insurance paperwork can quickly become overwhelming."</blockquote>
+        <p class="ans"><strong>Binder and Money:</strong> scan a letter and the app reads it on-device and files it, a "who's who" care team, and plain-language MediShield Life, Cancer Drug List and MediFund cards.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="journey">
+  <div class="wrap">
+    <h2>Seven stages, one companion.</h2>
+    <p class="sub">Teman meets people where they are, and shows only what fits that moment. Content about palliative care stays hidden until the patient chooses to open it.</p>
+    <ol class="journey">
+      <li><strong>Just diagnosed</strong><span>Words I heard, scan my report, the first week</span></li>
+      <li><strong>Care team</strong><span>Who is who, who to call, the Medical Social Worker</span></li>
+      <li><strong>Planning treatment</strong><span>Question builder, visit mode, second opinion</span></li>
+      <li><strong>Paying for care</strong><span>MediShield Life, CDL, MediSave, MediFund, charity funds</span></li>
+      <li><strong>During treatment</strong><span>Reminders, getting there, side effects, when to call</span></li>
+      <li><strong>Mind and family</strong><span>Check-in, psychosocial care, caregivers, conversations</span></li>
+      <li><strong>What's next</strong><span>Survivorship, or palliative care offered early and gently</span></li>
+    </ol>
+  </div>
+</section>
+
+<section id="design">
+  <div class="wrap">
+    <h2>Designed with Apple's Human Interface Guidelines.</h2>
+    <p class="sub">A standard five-tab structure, text that scales to the largest accessibility sizes, 60-point targets for hands affected by neuropathy, and Lock Screen notices that never name a diagnosis. <a href="https://github.com/cweekiat/teman/blob/main/docs/design-hig.md">Read the design doc</a>.</p>
+    <div class="phones">
+      <figure>
+        <div class="phone" role="img" aria-label="Mock-up of visit mode: a checklist of questions for Dr Lim, two of five answered, with a dictated answer note under the first.">
+          <div class="screen" aria-hidden="true">
+            <div class="sb"><span>10:42</span><span>●●● ▮</span></div>
+            <div class="title">Visit · Dr Lim</div>
+            <div class="row">
+              <div class="chk"><span class="box on">✓</span><div><strong>What type and stage is it?</strong><div class="muted">Note: "Stage II. Pathology report next week."</div></div></div>
+              <div class="chk"><span class="box on">✓</span><div><strong>Which tests are still pending?</strong></div></div>
+              <div class="chk"><span class="box"></span><div><strong>What is the goal of this treatment?</strong></div></div>
+              <div class="chk"><span class="box"></span><div><strong>Who can talk to me about costs?</strong></div></div>
+              <div class="chk"><span class="box"></span><div><strong>Who do I call after hours?</strong></div></div>
+            </div>
+            <div class="row muted">2 of 5 answered · Recording on this iPhone</div>
+            <div class="spacer"></div>
+            <div class="tabbar"><span><i>☀</i>Today</span><span class="on"><i>?</i>Ask</span><span><i>▤</i>Learn</span><span><i>▣</i>Binder</span><span><i>♡</i>Support</span></div>
+          </div>
+        </div>
+        <figcaption class="caption">Visit mode: start with the most important questions, as NCCS suggests, and tick them off.</figcaption>
+      </figure>
+      <figure>
+        <div class="phone" role="img" aria-label="Mock-up of a glossary entry for neutropenia with a plain-language definition, a question to ask the doctor, and a citation chip reading NCCS, Chemotherapy side effects, checked November 2026.">
+          <div class="screen" aria-hidden="true">
+            <div class="sb"><span>21:08</span><span>●●● ▮</span></div>
+            <div class="title">Learn</div>
+            <div class="row"><div class="word">Neutropenia</div><div class="muted">noun · new-tro-PEE-nee-a</div>
+              <p style="margin:.5rem 0 0">A low number of a type of white blood cell. Chemotherapy can lower it, which makes infections more likely.</p>
+              <span class="cite">NCCS · Chemotherapy side effects · checked Nov 2026</span></div>
+            <div class="row"><div class="muted">ASK YOUR DOCTOR</div><strong>"What temperature should make me call you, and which number do I call?"</strong><span class="pill">+ Add to Questions</span></div>
+            <div class="row muted">Drafted on this iPhone · Edit · Read the source</div>
+            <div class="spacer"></div>
+            <div class="tabbar"><span><i>☀</i>Today</span><span><i>?</i>Ask</span><span class="on"><i>▤</i>Learn</span><span><i>▣</i>Binder</span><span><i>♡</i>Support</span></div>
+          </div>
+        </div>
+        <figcaption class="caption">Every medical sentence carries its source. Teman explains words and never interprets your results.</figcaption>
+      </figure>
+    </div>
+    <div class="grid g4" style="margin-top:2.2rem">
+      <div class="card"><h3>Accessibility first</h3><p>Dynamic Type to AX5, VoiceOver labels on every control, Reduce Motion, and meaning never carried by colour alone.</p></div>
+      <div class="card"><h3>Ask in context</h3><p>No permission prompts at launch. Each permission is requested when its feature is first used, with a one-sentence reason.</p></div>
+      <div class="card"><h3>Honest notifications</h3><p>Time Sensitive only for "leave now". Medicines use AlarmKit. Teman sends no marketing.</p></div>
+      <div class="card"><h3>Four languages</h3><p>English, Chinese, Malay and Tamil, with large text and read-aloud for tired eyes.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="frameworks">
+  <div class="wrap">
+    <h2>Native iOS, for holistic care.</h2>
+    <p class="sub">Apple's own frameworks run on the device, are accessible by default, and work offline. <a href="https://github.com/cweekiat/teman/blob/main/docs/frameworks.md">Full framework map</a>.</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th scope="col">Care need</th><th scope="col">Frameworks</th></tr></thead>
+      <tbody>
+        <tr><td>Understanding documents</td><td><code>VisionKit</code> scan · <code>Vision</code> document reading · <code>Foundation Models</code> extraction · <code>NaturalLanguage</code> search</td></tr>
+        <tr><td>Appointments and getting there</td><td><code>UserNotifications</code> · <code>EventKit</code> (write-only) · <code>ActivityKit</code> Live Activities · <code>MapKit</code> transit ETA · <code>WidgetKit</code></td></tr>
+        <tr><td>Medicines and symptoms</td><td><code>AlarmKit</code> · <code>HealthKit</code> (optional) · <code>PDFKit</code> "Since my last visit" export</td></tr>
+        <tr><td>Speaking up</td><td><code>Speech</code> (SpeechAnalyzer) on-device visit transcripts · <code>AVSpeechSynthesizer</code> read-aloud · <code>App Intents</code> for Siri</td></tr>
+        <tr><td>Languages</td><td>Human-localised UI · <code>Translation</code> for cited content, labelled as machine-translated</td></tr>
+        <tr><td>Privacy</td><td><code>SwiftData</code> with file protection · <code>CryptoKit</code> · Keychain · <code>LocalAuthentication</code> app lock</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="ai">
+  <div class="wrap">
+    <h2>On-device AI that reads, rewrites and drafts, and never decides.</h2>
+    <p class="sub">Local language models (Apple's Foundation Models by default, with optional open-weight packs such as a phone-sized SEA-LION for Southeast Asian languages) run entirely on the iPhone. Teman's design assumes a small model will sometimes be wrong, so the model never acts as a source of truth. <a href="https://github.com/cweekiat/teman/blob/main/docs/on-device-llm.md">Read the LLM brainstorm</a>.</p>
+    <div class="pipe" aria-label="Answer pipeline">
+      <div class="stop"><strong>Red-flag gate.</strong> Fixed rules catch fever, bleeding or breathlessness and show the care team's instructions and 995.</div>
+      <div class="stop"><strong>Scope gate.</strong> Requests to diagnose, choose treatment, check eligibility or give prognosis go to "Ask your doctor".</div>
+      <div><strong>Retrieve.</strong> Search only the bundled, reviewed Singapore source library.</div>
+      <div><strong>Generate.</strong> Guided generation: every sentence must name its source.</div>
+      <div><strong>Verify.</strong> Drop uncited, unsupported or interpretive sentences.</div>
+      <div><strong>Show.</strong> Citation chips, "Drafted on this iPhone", and Edit, Retry or Discard.</div>
+    </div>
+    <div class="grid g4" style="margin-top:1.4rem">
+      <div class="card"><h3>Explain a word</h3><p>A Primary 6-level definition, built only from cited passages.</p></div>
+      <div class="card"><h3>Read my letter</h3><p>Extracts the date, time, place and preparation, and you confirm before saving.</p></div>
+      <div class="card"><h3>Suggest questions</h3><p>Picks from a curated question library and rewords for you. It never invents clinical questions.</p></div>
+      <div class="card"><h3>Summarise my visit</h3><p>A draft from your own on-device recording, with quotes, for you to check.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="privacy">
+  <div class="wrap">
+    <h2>Nothing to leak.</h2>
+    <p class="sub">The safest patient data is data the publisher never holds. <a href="https://github.com/cweekiat/teman/blob/main/docs/safety-and-privacy.md">Safety and privacy doc</a>.</p>
+    <div class="grid g3">
+      <div class="card"><h3>No account, no server</h3><p>Teman has no sign-up, analytics or third-party SDKs. Its App Store label would read "Data Not Collected".</p></div>
+      <div class="card"><h3>Encrypted on the iPhone</h3><p>Complete file protection, CryptoKit-encrypted documents, and an optional Face ID lock.</p></div>
+      <div class="card"><h3>You choose what to share</h3><p>Exports open in the share sheet with a preview. Teman points to HealthHub Caregiver Access for official record sharing.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="sources">
+  <div class="wrap">
+    <h2>Trusted Singapore sources, always cited.</h2>
+    <p class="sub">Medical and financial facts come from Singapore public bodies and national cancer centres first, then established Singapore charities. International sources are used for definitions only, and are labelled. <a href="https://github.com/cweekiat/teman/blob/main/docs/sources.md">Full source registry</a>.</p>
+    <ul class="src">
+      <li><a href="https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/medishield-life/cancer-drug-list/">MOH · Cancer Drug List</a></li>
+      <li><a href="https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/medishield-life/medishield-life-benefits/">MOH · MediShield Life benefits</a></li>
+      <li><a href="https://www.moh.gov.sg/newsroom/no-one-will-be-denied-appropriate-cancer-care-due-to-an-inability-to-pay/">MOH · No one denied cancer care due to inability to pay</a></li>
+      <li><a href="https://synapxe.sg/healthtech/national-programmes/healthhub">HealthHub (MOH and Synapxe)</a></li>
+      <li><a href="https://www.nccs.com.sg/patient-care/questions-a-cancer-patient-should-ask-at-their-first-clinic-appointment">NCCS · Questions to ask at your first appointment</a></li>
+      <li><a href="https://www.nccs.com.sg/your-care/caregiver-support/talking-to-the-doctor">NCCS · Talking to the doctor</a></li>
+      <li><a href="https://www.nccs.com.sg/your-care/patient-support/chemotherapy-side-effects">NCCS · Chemotherapy side effects</a></li>
+      <li><a href="https://www.nccs.com.sg/our-specialties/psychosocial-oncology">NCCS · Psychosocial Oncology</a></li>
+      <li><a href="https://www.nccs.com.sg/clinic-visit/charges-and-payment/medisave-medishield-life-medifund">NCCS · MediSave, MediShield Life, MediFund</a></li>
+      <li><a href="https://nccs.com.sg/patient-care/visitor-information">NCCS · Getting here</a></li>
+      <li><a href="https://www.ncis.com.sg/cancer-information/chemotherapy/chemotherapy-side-effects">NCIS · Chemotherapy side effects</a></li>
+      <li><a href="https://ncis.com.sg/our-services/specialties/psychosocial-oncology">NCIS · Psychosocial Oncology</a></li>
+      <li><a href="https://singaporecancersociety.org.sg/understanding-your-diagnosis-treatment/">Singapore Cancer Society · Understanding your diagnosis</a></li>
+      <li><a href="https://singaporecancersociety.org.sg/hospital-transportation-assistance/">Singapore Cancer Society · Hospital transport</a></li>
+      <li><a href="https://singaporecancersociety.org.sg/?p=8930">Singapore Cancer Society · Financial assistance</a></li>
+      <li><a href="https://www.healthxchange.sg/cancer/coping-tips/cope-chemotherapy-side-effects-nausea-hair-loss-bleeding">SingHealth HealthXchange · Coping with side effects</a></li>
+      <li><a href="https://www.bcf.org.sg">Breast Cancer Foundation</a></li>
+      <li><a href="https://www.ccf.org.sg">Children's Cancer Foundation</a></li>
+      <li><a href="https://singaporehospice.org.sg/">Singapore Hospice Council</a></li>
+      <li><a href="https://www.hsa.gov.sg/announcements/regulatory-updates/update-for-guidelines-on-risk-classification-of-samd-and-qualification-of-clinical-decision-support-software-(cdss)">HSA · SaMD and CDSS guidelines</a></li>
+      <li><a href="https://www.pdpc.gov.sg/organisations/regulations-decisions/regulatory-guidance/advisory-guidelines-for-the-healthcare-sector">PDPC · Healthcare sector guidelines</a></li>
+      <li><a href="https://developer.apple.com/design/human-interface-guidelines/">Apple · Human Interface Guidelines</a></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="emergency" role="note">
+      <strong>In an emergency, call 995.</strong>
+      <span>Teman is a concept, not a medical service. If you are on cancer treatment and feel unwell, call the number your care team gave you. For support, the <a href="https://www.nccs.com.sg/contact-us">NCCS Cancer Helpline</a> and the <a href="https://singaporecancersociety.org.sg/connect-with-us/">Singapore Cancer Society</a> can help.</span>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Teman is a concept and design project. It does not diagnose cancer, choose treatment, determine trial eligibility, or replace your medical team. Source content belongs to its publishers. Teman links to and cites it, and does not republish it.</p>
+    <p>Documentation CC BY 4.0 · Code samples MIT · <a href="https://github.com/cweekiat/teman">github.com/cweekiat/teman</a></p>
+  </div>
+</footer>
+</body>
+</html>
