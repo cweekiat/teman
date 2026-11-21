@@ -1,6 +1,6 @@
 # Teman: a cancer care companion for Singapore
 
-*Teman* means "companion" in Malay. Teman is a **concept and design repository** for an iOS app. The app would help people with cancer in Singapore, and the people who care for them, to:
+*Teman* means "companion" in Malay. Teman is an iOS app that helps people with cancer in Singapore, and the people who care for them, to:
 
 - understand a diagnosis and the medical words around it
 - find the right care: physical, emotional, psychological and financial
@@ -16,15 +16,15 @@
 
 ![Four Teman screens: Today, My Care, Talk and Is My Drug Covered](docs/assets/readme/screens.png)
 
-<sub>By <a href="https://cweekiat.github.io/">cweekiat</a></sub>
+<sub><a href="https://cweekiat.github.io/">More projects</a></sub>
 
-> **Status:** concept, design and architecture only. No app has shipped, so nothing here is a medical product.
+> Teman is not a medical product and does not give medical advice.
 
 ---
 
 ## What Teman will never do
 
-These are product boundaries, not disclaimers added at the end. Each one is enforced in the design (see [docs/safety-and-privacy.md](docs/safety-and-privacy.md)).
+These are product boundaries, not disclaimers added at the end.
 
 | Teman does **not** | Instead, Teman |
 |---|---|
@@ -45,8 +45,6 @@ The work is built around three things patients and caregivers say:
 
 > "The volume of doctors, documents, and insurance paperwork can quickly become overwhelming."
 
-[docs/product.md](docs/product.md) maps each quote to features.
-
 ## The journey Teman follows
 
 1. **Just diagnosed:** understand the words and know what to ask first.
@@ -61,16 +59,7 @@ The work is built around three things patients and caregivers say:
 
 | Doc | What's in it |
 |---|---|
-| [Product brainstorm](docs/product.md) | People, the journey, every feature, and the patient quotes each one answers |
-| [Design (Apple HIG)](docs/design-hig.md) | Navigation, accessibility, onboarding, permissions, notifications and voice, each tied to the Human Interface Guideline it follows |
-| [Native iOS frameworks](docs/frameworks.md) | Which Apple framework does which job, and why |
-| [Choosing the SEA-LION model](docs/on-device-model.md) | Which SEA-LION model fits on an iPhone, multimodal reading of labels and letters, and the evaluation plan |
-| [SEA-LION on iPhone: work required](docs/sealion-ios-requirements.md) | Conversion, quantisation, voice, safety, delivery and effort, scoped but not built |
-| [On-device LLMs](docs/on-device-llm.md) | How offline language models can help, the guardrails around them, and how to evaluate them |
-| [Architecture](docs/architecture.md) | Modules, data model, citation pipeline and Swift sketches |
 | [Disclaimer, Terms and Privacy Policy](docs/legal.md) | The in-app legal text for this community project |
-| [Privacy compliance (HIPAA/PDPA-grade)](docs/privacy-compliance.md) | Safeguard-by-safeguard mapping for the iOS build |
-| [Safety and privacy](docs/safety-and-privacy.md) | Clinical boundaries, red flags, HSA software-as-a-medical-device positioning, and the PDPA |
 | [Source registry](docs/sources.md) | Every trusted Singapore source Teman draws on, and the review cadence |
 
 ## In an emergency

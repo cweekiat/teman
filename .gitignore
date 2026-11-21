@@ -2,3 +2,14 @@ ios/
 *.xcuserstate
 xcuserdata/
 .DS_Store
+
+# Design and planning notes: kept local, not published
+docs/product.md
+docs/design-hig.md
+docs/frameworks.md
+docs/on-device-model.md
+docs/sealion-ios-requirements.md
+docs/on-device-llm.md
+docs/architecture.md
+docs/privacy-compliance.md
+docs/safety-and-privacy.md
