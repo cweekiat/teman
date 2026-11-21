@@ -10,6 +10,14 @@
 
 **Project site:** https://cweekiat.github.io/teman/
 
+<p align="center"><img src="docs/assets/readme/demo.gif" width="260" alt="Teman demo: Today, My Care and Talk screens"></p>
+
+<p align="center"><a href="https://cweekiat.github.io/teman/#demo"><b>▶ Watch the 45-second demo</b></a> · <a href="docs/assets/video/teman-demo.mp4">MP4</a></p>
+
+![Four Teman screens: Today, My Care, Talk and Is My Drug Covered](docs/assets/readme/screens.png)
+
+<sub>By <a href="https://cweekiat.github.io/">cweekiat</a></sub>
+
 > **Status:** concept, design and architecture only. No app has shipped, so nothing here is a medical product.
 
 ---

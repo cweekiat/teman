@@ -154,9 +154,10 @@ h3{font-size:1.18rem;margin:0 0 .35rem;letter-spacing:-.01em}
 .chapter ul{margin:0;padding:0;list-style:none;display:grid;gap:.45rem}
 .chapter li{display:flex;gap:.6rem;color:var(--ink)}
 .chapter li::before{content:"";flex:none;width:8px;height:8px;margin-top:.6em;border-radius:50%;background:var(--rose)}
-.chapter .mobile-shot{display:none;width:230px;margin:1.5rem auto 0}
+.chapter .mobile-shot{display:none;position:relative;width:min(230px,70vw);height:auto;margin:1.5rem auto 0;object-fit:cover}
 @media (max-width:860px){.chapter{min-height:auto;padding:2.5rem 0}.chapter .mobile-shot{display:block}}
 
+@media (hover:none){.home,.lang-card .phone{transform:none!important}}
 /* feature cards */
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;perspective:1200px}
 @media (max-width:940px){.cards{grid-template-columns:repeat(2,1fr)}}
@@ -499,7 +500,7 @@ footer a{color:var(--ink2)}
   <div class="wrap">
     <div class="cols">
       <div><a class="brand" href="#"><img src="assets/icon-512.png" alt="" width="34" height="34">Teman</a>
-        <p>"Teman" means companion in Malay. A free community project by a volunteer developer, for people with cancer in Singapore and those who care for them.</p></div>
+        <p>"Teman" means companion in Malay. A free community project by a volunteer developer, for people with cancer in Singapore and those who care for them.</p> <a href="https://cweekiat.github.io/">Made by cweekiat ↗</a></p></div>
       <div><h4>Legal</h4><ul><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Disclaimer and Terms</a></li><li><a href="support.html">Support</a></li></ul></div>
       <div><h4>Behind the app</h4><ul><li><a href="https://github.com/cweekiat/teman/blob/main/docs/sources.md">Sources</a></li><li><a href="https://github.com/cweekiat/teman/blob/main/docs/privacy-compliance.md">Privacy and PDPA notes</a></li><li><a href="https://github.com/cweekiat/teman/blob/main/docs/design-hig.md">Design notes</a></li></ul></div>
     </div>
